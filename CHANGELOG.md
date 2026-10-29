@@ -1,5 +1,64 @@
 # Changelog
 
+## M5: Judge + narrator + API
+
+- `breach/judge/`: the judge (HANDOFF §6.1). Retrieves candidates via M4's
+  hybrid retrieval, calls the LLM with the candidates and the player's
+  notes inside a nonce-delimited `<player_notes>` block, validates the
+  response against `JudgeOutput`/`CreditedMitigation`, and verifies in
+  code — not just trusts — every rule the model is told: evidence must
+  be a real substring of the notes, confidence must clear
+  `JUDGE_CONFIDENCE_THRESHOLD` (default 0.6), and a credited
+  `mitigation_id` must be one of the candidates passed in (filtered even
+  if the model ignores the instruction). Malformed output retries once,
+  then credits nothing and logs it, per spec.
+- `breach/narrator/`: the narrator (HANDOFF §6.2). Input is the engine's
+  own output (plus which component ids were flagged for injection, never
+  their notes) — player text never reaches this prompt. Output is
+  rejected and retried if it mentions a `technique_id` the engine didn't
+  produce; after exhausting retries it falls back to a plain, factual
+  rendering straight from the engine output rather than guessing.
+- `breach/security/injection.py`: input limits (control-character
+  stripping, length cap) and a heuristic injection detector that backs up
+  — never replaces — the judge's own `injection_suspected` field.
+  Either one tripping zeroes that component's credit (HANDOFF §7.3).
+- `breach/llm.py`: the LLM behind an interface, the same split as M4's
+  embedding provider — `AnthropicLLMClient` (real, needs
+  `ANTHROPIC_API_KEY`) and `DeterministicTestLLMClient` (no network: reads
+  the judge/narrator's own prompt format and answers by keyword matching,
+  used by the test suite, `npm run test:e2e`, and anywhere
+  `LLM_PROVIDER=test`). Also logs latency and token usage per call and a
+  list-price cost estimate (HANDOFF §10) — explicitly an estimate, not a
+  billed amount.
+- `breach/app.py`: FastAPI per HANDOFF §10 — `GET /healthz`, `GET
+  /levels`, `GET /levels/{id}`, `POST /runs` (judge → engine → narrator,
+  persisted to the `runs` table, added a `narrator_output` column for),
+  `GET /runs/{id}`. `POST /runs` is rate-limited per client IP
+  (in-memory — a known limitation for a multi-instance deploy, noted in
+  the README).
+- Frontend switched off the M3 mock: `runAttack` now calls the real API
+  (`src/lib/runApi.ts`), and `src/lib/runMapping.ts` adapts the engine's
+  `{from, to, technique_id, blocked}` steps and the narrator's
+  `{through, held, tips}` debrief into the UI's existing display shapes.
+  The Playwright e2e suite now runs against the real API + a real
+  Postgres (via a second `webServer` entry that starts the API with the
+  deterministic test providers) instead of canned fixture data; the
+  default level-3 card loadout turned out to **not** breach against real
+  data (MFA blocks the credential-theft step at Postgres), so the e2e
+  assertions were updated from the old fixture's "4 steps, breached, C+"
+  to the real computed result (3 steps, held, grade D) rather than kept
+  passing against stale numbers.
+- Tests: 21 new backend tests (`test_judge.py`, `test_narrator.py`,
+  `test_security_injection.py`, `test_api.py`) — contract tests for both
+  LLM schemas, confirming the judge can't credit outside its candidate
+  list or unverified evidence, and the narrator can't introduce a
+  technique ID the engine never produced (HANDOFF's explicit M5
+  acceptance criterion). 80 backend tests pass with the DB up (59 pass,
+  21 skipped without it — judge and API run/contract tests need Postgres
+  for retrieval, same as M4's narrator tests need none at all). Frontend:
+  `gameStore.test.ts` updated for the async API call; all 4 Playwright
+  e2e tests pass against the live stack.
+
 ## M4: Retrieval
 
 - `docker-compose.yml` — a `db` service (`pgvector/pgvector:pg16`) on

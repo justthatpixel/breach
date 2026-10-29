@@ -1,11 +1,4 @@
-import type {
-  AttackReplayStep,
-  CampaignLevelSummary,
-  CardDef,
-  DebriefData,
-  Level,
-  MockRunResult,
-} from "@/lib/types";
+import type { CampaignLevelSummary, CardDef, DebriefData, Level } from "@/lib/types";
 
 /**
  * All sample content below is transcribed from design/game-screen.dc.html
@@ -152,62 +145,11 @@ export const campaignLevels: CampaignLevelSummary[] = [
 ];
 
 /**
- * The mocked "backend": run() always returns this canned replay, taken
- * from the game-screen mockup's own sample data. The real engine (M2)
- * isn't wired into the frontend until M5 — this is the "mocked backend"
- * M3 is named for.
+ * Sample debrief data, still used as a fallback if the debrief screen is
+ * ever opened without a completed run (e.g. a direct link) — the real
+ * run goes through the backend as of M5 (see src/lib/runApi.ts,
+ * src/lib/runMapping.ts), not this fixture.
  */
-export function mockRunLevel3(): MockRunResult {
-  const steps: AttackReplayStep[] = [
-    {
-      step: 1,
-      from: "internet",
-      to: "gateway",
-      title: "Exploit public endpoint",
-      techniqueId: "T1190",
-      detail: "WAF stopped injection, but /refunds has no auth check.",
-      blocked: false,
-    },
-    {
-      step: 2,
-      from: "gateway",
-      to: "payments",
-      title: "Steal role credentials",
-      techniqueId: "T1552.005",
-      detail: "Read the container's IAM credentials from the metadata service.",
-      blocked: false,
-    },
-    {
-      step: 3,
-      from: "payments",
-      to: "postgres",
-      title: "Read card data",
-      techniqueId: "T1078.004",
-      detail: "The role can query every table in Postgres.",
-      blocked: false,
-    },
-    {
-      step: 4,
-      from: "payments",
-      to: "secrets",
-      title: "Direct secrets access",
-      techniqueId: "T1552",
-      detail: "Blocked: no public endpoint.",
-      blocked: true,
-    },
-  ];
-
-  return {
-    steps,
-    redTeamLine: {
-      techniqueId: "T1078.004",
-      text:
-        "Nice encryption. Shame your payments role can read every table. I'm in with its credentials, and the card data decrypts for me just fine.",
-    },
-    breached: true,
-  };
-}
-
 export const debrief3: DebriefData = {
   grade: "C+",
   breached: true,
