@@ -1,5 +1,38 @@
 # Changelog
 
+## M3: Frontend with mocked backend
+
+- `apps/web/` — Next.js (App Router) + TypeScript, React Flow for the
+  architecture canvas, Framer Motion for the attack-replay pacing, Zustand
+  for client state. Fonts, colours, shadows and layout copied from
+  `design/game-screen.dc.html` and `design/debrief.dc.html`'s inline
+  styles, rebuilt as real components (not the template syntax).
+- Three screens: level select (`/`), the game screen
+  (`/levels/03-payments`), and the debrief (`/levels/03-payments/debrief`).
+  Only Level 3 is playable — the rest of the campaign is lock/done fixture
+  state, per HANDOFF §11's milestone ordering.
+- `src/fixtures/level3.ts` transcribes the mockups' own `renderVals()`
+  sample data (HANDOFF §9) — mission text, the card hand, the attack
+  replay log, the debrief grade/stats/through/held/for-an-A/share card.
+  Two small adaptations are called out in that file's header comment: the
+  mockup sample imagines a component ("admin console") that isn't in the
+  authored `data/levels/03-payments.yaml`, so the MFA card and one debrief
+  "held" item were re-pointed at components that actually exist on this
+  canvas.
+- The backend is mocked, as the milestone name says: "Run attack" always
+  returns the same canned replay from the fixture rather than calling the
+  real engine (M2) or an API — that wiring is M5. The game screen itself is
+  fully interactive: select a component, play a card against budget,
+  write notes, watch the replay stage in, reach the debrief.
+- `prefers-reduced-motion` is respected in two places: CSS
+  (`globals.css`, the marching-dash/pulse/bob keyframes) and JS (the
+  staged step-by-step reveal in `GameScreen.tsx` is skipped in favour of
+  showing the final result immediately).
+- Tests: 13 Vitest unit tests on the game store (budget limits, card
+  placement, reset, attack-phase sequencing), 4 Playwright e2e tests
+  covering the full Level 3 flow end to end plus a dedicated
+  reduced-motion run. `next build` and `eslint` are clean.
+
 ## M2: Deterministic engine
 
 - `breach/engine/` — pure, I/O-free attack engine: simple-path enumeration

@@ -1,0 +1,54 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heading {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.node {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 13px var(--font-mono);
+  border: 2px solid var(--ink);
+  text-decoration: none;
+  color: inherit;
+}
+
+.done {
+  background: var(--data-teal);
+  color: #fff;
+}
+
+.current {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: scale(1.12);
+}
+
+.locked {
+  background: var(--hairline);
+  color: var(--ink-faint);
+  border-style: dashed;
+  cursor: default;
+  pointer-events: none;
+}

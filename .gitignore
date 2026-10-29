@@ -12,3 +12,8 @@ dist/
 build/
 .DS_Store
 evals/results/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+*.tsbuildinfo

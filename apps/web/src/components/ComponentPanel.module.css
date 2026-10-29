@@ -1,0 +1,78 @@
+.section {
+  background: var(--panel);
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconWrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.toggleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 32px;
+}
+
+.toggleRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ink);
+}
+
+.notesLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.textarea {
+  resize: vertical;
+  padding: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  font: 400 13px/1.5 var(--font-body);
+  color: var(--ink);
+  background: #ffffff;
+}
+
+.hint {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--compute-amber-tint);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--ink-faint);
+}

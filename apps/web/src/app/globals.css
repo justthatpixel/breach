@@ -1,0 +1,131 @@
+:root {
+  --paper: #f4eee2;
+  --paper-dot: #d9cfbc;
+  --panel: #fffbf2;
+  --ink: #1c1917;
+  --ink-soft: #44403c;
+  --ink-faint: #57534e;
+  --header: #1c1917;
+  --header-chip: #2e2a26;
+  --header-line: #57534e;
+  --header-fg-dim: #d6cec0;
+
+  --edge-blue: #2b59c3;
+  --edge-blue-tint: #dce6fa;
+  --compute-amber: #b7791f;
+  --compute-amber-tint: #fbefc5;
+  --data-teal: #0f766e;
+  --data-teal-tint: #cceae8;
+  --security-violet: #6d28d9;
+  --security-violet-tint: #ede4fb;
+
+  --accent: #c8371e;
+  --accent-soft: #fadcd5;
+  --accent-soft-ink: #8a2414;
+  --gold: #f5c542;
+  --grey-line: #a8a29e;
+  --hairline: #e9e1d0;
+
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", sans-serif;
+  --font-body: var(--font-geist-sans), Geist, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "Geist Mono", monospace;
+
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --shadow-md: 4px 4px 0 var(--ink);
+  --shadow-lg: 6px 6px 0 var(--ink);
+}
+
+@keyframes marchX {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 16px 0;
+  }
+}
+@keyframes marchUp {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -16px;
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.marchX {
+  animation: marchX 0.7s linear infinite;
+}
+.marchUp {
+  animation: marchUp 0.7s linear infinite;
+}
+.pulse {
+  animation: pulse 1.4s ease-out infinite;
+}
+.bob {
+  animation: bob 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marchX,
+  .marchUp,
+  .pulse,
+  .bob {
+    animation: none !important;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+}
+
+body {
+  min-height: 100%;
+  color: var(--ink);
+  background: var(--paper);
+  background-image: radial-gradient(var(--paper-dot) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}

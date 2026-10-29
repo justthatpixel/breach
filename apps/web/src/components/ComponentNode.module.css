@@ -1,0 +1,90 @@
+.node {
+  position: relative;
+  width: 160px;
+  box-sizing: border-box;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.node:focus-visible {
+  outline: 3px solid var(--edge-blue);
+  outline-offset: 2px;
+}
+
+.selected {
+  box-shadow: var(--shadow-md);
+}
+
+.hit {
+  border: 3px solid var(--accent);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.held {
+  box-shadow: var(--shadow-md);
+}
+
+.iconWrap {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sublabel {
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.tag {
+  position: absolute;
+  top: -13px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  border: 2px solid var(--ink);
+  white-space: nowrap;
+}
+
+.tagBreached {
+  background: var(--accent);
+  transform: rotate(-4deg);
+}
+
+.tagHeld {
+  background: var(--ink);
+}
+
+.tagMitigation {
+  background: var(--security-violet);
+  transform: rotate(4deg);
+}
