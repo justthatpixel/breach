@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Breach — Level 3 game screen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4EEE2}
+a{color:#1C1917}a:hover{color:#57534E}
+@keyframes marchX{from{background-position:0 0}to{background-position:16px 0}}
+@keyframes marchUp{from{background-position:0 0}to{background-position:0 -16px}}
+@keyframes pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(2.1);opacity:0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.mx{animation:marchX .7s linear infinite}
+.mu{animation:marchUp .7s linear infinite}
+.pulse{animation:pulse 1.4s ease-out infinite}
+.bob{animation:bob 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.mx,.mu,.pulse,.bob{animation:none}}
+</style>
+</helmet>
+<div style="font-family: Geist, system-ui, sans-serif; color: #1C1917; background: #F4EEE2; background-image: radial-gradient(#D9CFBC 1.2px, transparent 1.2px); background-size: 22px 22px; min-height: 100vh; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: #1C1917; color: #F4EEE2">
+    <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="width: 34px; height: 34px; border-radius: 8px; background: {{accent}}; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"></path><path d="M9 12l6 0"></path></svg>
+        </span>
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.03em">Breach</span>
+      </div>
+      <span style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #2E2A26; font-size: 13px">
+        <span style="font-family: 'Geist Mono', monospace; font-weight: 700; color: #F5C542">LVL 3</span>
+        <span style="font-weight: 600">Payments backend</span>
+      </span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 4px; min-width: 160px">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: #D6CEC0">
+          <span>Defence rating</span><span style="font-family: 'Geist Mono', monospace">340 / 600</span>
+        </div>
+        <div style="height: 8px; border-radius: 4px; background: #2E2A26; overflow: hidden">
+          <div style="width: 57%; height: 100%; background: #F5C542"></div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px" aria-label="Budget: 2 of 6 coins left">
+        <sc-for list="{{coins}}" as="c" hint-placeholder-count="6">
+          <span style="{{c.style}}"></span>
+        </sc-for>
+        <span style="font-size: 12px; color: #D6CEC0; margin-left: 4px">2 left</span>
+      </div>
+      <button type="button" style="height: 40px; padding: 0 16px; border: 2px solid #57534E; border-radius: 10px; background: transparent; font: 600 13px Geist, sans-serif; color: #F4EEE2; cursor: pointer">Reset</button>
+      <button type="button" onClick="{{toggleAttack}}" style="height: 40px; padding: 0 20px; border: 2px solid #F4EEE2; border-radius: 10px; background: {{accent}}; font: 700 14px Geist, sans-serif; color: #FFFFFF; cursor: pointer; box-shadow: 3px 3px 0 #F4EEE2">{{runLabel}}</button>
+    </div>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; flex: 1; align-items: stretch; gap: 20px; padding: 20px; box-sizing: border-box">
+
+    <aside style="flex: 1 1 250px; max-width: 290px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <section style="position: relative; background: #FFFBF2; border: 2px solid #1C1917; border-radius: 14px; box-shadow: 5px 5px 0 #1C1917; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+        <span style="position: absolute; top: -12px; left: 14px; font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 6px; background: #F5C542; border: 2px solid #1C1917">MISSION</span>
+        <h1 style="margin: 6px 0 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 24px; line-height: 1.05; letter-spacing: -0.02em">Keep the card data safe.</h1>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #44403C">Build a backend for an app that lets friends send each other money. It stores card details and has to stay up 24/7.</p>
+        <div style="display: flex; gap: 6px; flex-wrap: wrap">
+          <span style="font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: #FADCD5; color: #8A2414">Threat: High</span>
+          <span style="font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; background: #E9E1D0; color: #44403C">6 coins</span>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; color: #57534E">CAMPAIGN</span>
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <sc-for list="{{levels}}" as="l" hint-placeholder-count="5">
+            <span style="{{l.style}}">{{l.label}}</span>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 10px">
+        <label style="display: flex; flex-direction: column; gap: 8px">
+          <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; color: #57534E">DESCRIBE YOUR DESIGN</span>
+          <textarea rows="7" style="resize: vertical; padding: 12px; border: 2px solid #1C1917; border-radius: 12px; font: 400 13px/1.55 Geist, sans-serif; color: #1C1917; background: #FFFFFF; box-shadow: 3px 3px 0 #1C1917">Users hit an API gateway, which routes to a payments service running in containers. Payments reads and writes card data in Postgres, pulls keys from a secrets store, and puts payouts on a queue.</textarea>
+        </label>
+        <button type="button" style="height: 40px; border: 2px solid #1C1917; border-radius: 10px; background: #2B59C3; color: #FFFFFF; font: 700 13px Geist, sans-serif; cursor: pointer; box-shadow: 3px 3px 0 #1C1917">Rebuild diagram</button>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <span style="font-size: 12px; color: #57534E">Found 6 components</span>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px">
+            <sc-for list="{{components}}" as="c" hint-placeholder-count="6">
+              <span style="display: flex; align-items: center; gap: 6px; padding: 4px 9px; border: 2px solid #1C1917; border-radius: 999px; background: #FFFBF2; font-size: 12px; font-weight: 600">
+                <span style="{{c.dot}}"></span>{{c.label}}
+              </span>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+      <div style="overflow-x: auto; border: 2px solid #1C1917; border-radius: 18px; background: #FFFBF2; box-shadow: 6px 6px 0 #1C1917">
+        <div style="position: relative; width: 800px; height: 540px; margin: 0 auto">
+
+          <span style="position: absolute; left: 20px; top: 20px; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 2px solid #1C1917; border-radius: 999px; background: #FFFFFF; font-size: 12px; font-weight: 600">
+            <span style="position: relative; width: 10px; height: 10px">
+              <span class="pulse" style="position: absolute; inset: 0; border-radius: 5px; background: {{accent}}"></span>
+              <span style="position: absolute; inset: 0; border-radius: 5px; background: {{accent}}"></span>
+            </span>
+            Red team is attacking · step 3 of 3
+          </span>
+          <span style="position: absolute; right: 20px; top: 20px; display: flex; gap: 12px; font-size: 12px; font-weight: 500; color: #44403C">
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 20px; height: 4px; border-radius: 2px; background: repeating-linear-gradient(90deg, {{accent}} 0 6px, transparent 6px 10px)"></span>Attack</span>
+            <span style="display: flex; align-items: center; gap: 6px"><span style="width: 20px; height: 4px; border-radius: 2px; background: #A8A29E"></span>Data flow</span>
+          </span>
+
+          <div style="position: absolute; left: 503px; top: 316px; width: 3px; height: 114px; background: #A8A29E; border-radius: 2px"></div>
+          <div style="position: absolute; left: 610px; top: 278px; width: 3px; height: 142px; background: #A8A29E; border-radius: 2px"></div>
+          <div style="position: absolute; left: 611px; top: 417px; width: 29px; height: 3px; background: #A8A29E; border-radius: 2px"></div>
+
+          <div class="{{marchX}}" style="position: absolute; left: 176px; top: 276px; width: 48px; height: 4px; border-radius: 2px; background: {{hLine}}"></div>
+          <div class="{{marchX}}" style="position: absolute; left: 384px; top: 276px; width: 40px; height: 4px; border-radius: 2px; background: {{hLine}}"></div>
+          <div class="{{marchX}}" style="position: absolute; left: 584px; top: 276px; width: 28px; height: 4px; border-radius: 2px; background: {{hLine}}"></div>
+          <div class="{{marchUp}}" style="position: absolute; left: 610px; top: 136px; width: 4px; height: 144px; border-radius: 2px; background: {{vLine}}"></div>
+          <div class="{{marchX}}" style="position: absolute; left: 612px; top: 136px; width: 28px; height: 4px; border-radius: 2px; background: {{hLine}}"></div>
+
+          <div style="position: absolute; left: 16px; top: 240px; width: 160px; height: 76px; box-sizing: border-box; border: 2px solid #1C1917; border-radius: 14px; background: #E9E1D0; padding: 10px; display: flex; align-items: center; gap: 10px">
+            <span style="width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; background: #1C1917; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4EEE2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Internet</span><span style="font-size: 11px; color: #57534E">Anyone</span></span>
+          </div>
+
+          <div style="position: absolute; left: 224px; top: 240px; width: 160px; height: 76px; box-sizing: border-box; border: 2px solid #1C1917; border-radius: 14px; background: #DCE6FA; box-shadow: 4px 4px 0 #1C1917; padding: 10px; display: flex; align-items: center; gap: 10px">
+            <span style="width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; background: #2B59C3; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h11"></path><path d="M12 4l3 3-3 3"></path><path d="M20 17H9"></path><path d="M12 14l-3 3 3 3"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">API gateway</span><span style="font-size: 11px; color: #44403C">Public · HTTPS</span></span>
+            <span style="position: absolute; top: -13px; right: -8px; display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: #6D28D9; color: #FFFFFF; border: 2px solid #1C1917; transform: rotate(4deg)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"></path></svg>WAF
+            </span>
+          </div>
+
+          <div style="position: absolute; left: 424px; top: 240px; width: 160px; height: 76px; box-sizing: border-box; border: {{hitBorder}}; border-radius: 14px; background: #FBEFC5; box-shadow: {{hitShadow}}; padding: 10px; display: flex; align-items: center; gap: 10px">
+            <span style="width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; background: #B7791F; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Payments</span><span style="font-size: 11px; color: #44403C">Container</span></span>
+            <sc-if value="{{showAttack}}" hint-placeholder-val="{{ true }}">
+              <span style="position: absolute; top: -13px; right: -8px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: {{accent}}; color: #FFFFFF; border: 2px solid #1C1917; transform: rotate(-4deg)">Breached</span>
+            </sc-if>
+          </div>
+
+          <div style="position: absolute; left: 640px; top: 100px; width: 150px; height: 76px; box-sizing: border-box; border: {{hitBorder}}; border-radius: 14px; background: #CCEDE8; box-shadow: {{hitShadow}}; padding: 10px; display: flex; align-items: center; gap: 10px">
+            <span style="width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; background: #0F766E; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Postgres</span><span style="font-size: 11px; color: #44403C">Card data</span></span>
+            <sc-if value="{{showAttack}}" hint-placeholder-val="{{ true }}">
+              <span class="bob" style="position: absolute; top: -44px; left: 50px; width: 40px; height: 40px">
+                <span class="pulse" style="position: absolute; inset: 0; border-radius: 20px; background: {{accent}}"></span>
+                <span style="position: absolute; inset: 0; border-radius: 20px; background: {{accent}}; border: 2px solid #1C1917; display: flex; align-items: center; justify-content: center">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Attacker"><path d="M4 9c0-2 3.6-4 8-4s8 2 8 4v2c0 4-3.6 8-8 8s-8-4-8-8V9z"></path><path d="M8 11l2.5 1"></path><path d="M16 11l-2.5 1"></path></svg>
+                </span>
+              </span>
+            </sc-if>
+          </div>
+
+          <div style="position: absolute; left: 640px; top: 380px; width: 150px; height: 76px; box-sizing: border-box; border: 2px solid #1C1917; border-radius: 14px; background: #EDE4FB; box-shadow: 4px 4px 0 #1C1917; padding: 10px; display: flex; align-items: center; gap: 10px">
+            <span style="width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; background: #6D28D9; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9"></path><path d="M17 6l3 3"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Secrets</span><span style="font-size: 11px; color: #44403C">Private · KMS</span></span>
+            <span style="position: absolute; top: -13px; right: -8px; display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: #1C1917; color: #FFFFFF; transform: rotate(4deg)">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Held
+            </span>
+          </div>
+
+          <div style="position: absolute; left: 424px; top: 430px; width: 160px; height: 76px; box-sizing: border-box; border: 2px solid #1C1917; border-radius: 14px; background: #FBEFC5; box-shadow: 4px 4px 0 #1C1917; padding: 10px; display: flex; align-items: center; gap: 10px">
+            <span style="width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px; background: #B7791F; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h10"></path></svg>
+            </span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 700">Queue</span><span style="font-size: 11px; color: #44403C">Payouts</span></span>
+          </div>
+
+          <sc-if value="{{showAttack}}" hint-placeholder-val="{{ true }}">
+            <span style="position: absolute; left: 186px; top: 264px; width: 28px; height: 28px; border-radius: 14px; background: #FFFFFF; border: 3px solid {{accent}}; color: {{accent}}; font: 700 12px 'Geist Mono', monospace; display: flex; align-items: center; justify-content: center; box-sizing: border-box">1</span>
+            <span style="position: absolute; left: 390px; top: 264px; width: 28px; height: 28px; border-radius: 14px; background: #FFFFFF; border: 3px solid {{accent}}; color: {{accent}}; font: 700 12px 'Geist Mono', monospace; display: flex; align-items: center; justify-content: center; box-sizing: border-box">2</span>
+            <span style="position: absolute; left: 598px; top: 192px; width: 28px; height: 28px; border-radius: 14px; background: {{accent}}; border: 3px solid {{accent}}; color: #FFFFFF; font: 700 12px 'Geist Mono', monospace; display: flex; align-items: center; justify-content: center; box-sizing: border-box">3</span>
+          </sc-if>
+        </div>
+      </div>
+
+      <section style="display: flex; flex-direction: column; gap: 8px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 18px; letter-spacing: -0.01em">Your hand</span>
+          <span style="font-size: 13px; color: #57534E">Play a card, then explain it in your notes</span>
+        </div>
+        <div style="display: flex; padding: 14px 8px 4px; overflow-x: auto">
+          <sc-for list="{{hand}}" as="k" hint-placeholder-count="6">
+            <div style="{{k.cardStyle}}">
+              <div style="{{k.bandStyle}}">
+                <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 10px; letter-spacing: 0.08em; color: #FFFFFF">{{k.kind}}</span>
+              </div>
+              <div style="padding: 10px; display: flex; flex-direction: column; gap: 6px; flex: 1">
+                <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px; line-height: 1.1">{{k.name}}</span>
+                <span style="font-size: 11px; line-height: 1.35; color: #44403C">{{k.effect}}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 10px 10px">
+                <span style="font-size: 10px; font-weight: 700; color: #57534E">{{k.status}}</span>
+                <span style="width: 22px; height: 22px; border-radius: 11px; background: #F5C542; border: 2px solid #1C1917; font: 700 11px 'Geist Mono', monospace; display: flex; align-items: center; justify-content: center; box-sizing: border-box">{{k.cost}}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </main>
+
+    <aside style="flex: 1 1 320px; max-width: 370px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <section style="display: flex; gap: 12px; align-items: flex-start">
+        <span style="flex: 0 0 48px; width: 48px; height: 48px; border-radius: 14px; background: {{accent}}; border: 2px solid #1C1917; display: flex; align-items: center; justify-content: center; transform: rotate(-4deg)">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9c0-2 3.6-4 8-4s8 2 8 4v2c0 4-3.6 8-8 8s-8-4-8-8V9z"></path><path d="M8 11l2.5 1"></path><path d="M16 11l-2.5 1"></path></svg>
+        </span>
+        <div style="position: relative; flex: 1; background: #FFFFFF; border: 2px solid #1C1917; border-radius: 4px 16px 16px 16px; box-shadow: 4px 4px 0 #1C1917; padding: 14px; display: flex; flex-direction: column; gap: 8px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
+            <span style="font-weight: 700; font-size: 13px">Red Team</span>
+            <span style="font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: #FADCD5; color: #8A2414">T1078.004</span>
+          </div>
+          <p style="margin: 0; font-size: 14px; line-height: 1.5">Nice encryption. Shame your payments role can read <strong>every table</strong>. I'm in with its credentials, and the card data decrypts for me just fine.</p>
+        </div>
+      </section>
+
+      <section style="background: #FFFBF2; border: 2px solid #1C1917; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span style="width: 32px; height: 32px; border-radius: 8px; background: #B7791F; display: flex; align-items: center; justify-content: center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path></svg>
+          </span>
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 18px">Payments</span>
+        </div>
+        <label style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; min-height: 32px">Public endpoint<input type="checkbox" style="width: 18px; height: 18px; accent-color: #1C1917"></label>
+        <label style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; min-height: 32px">Encrypted at rest<input type="checkbox" checked="checked" style="width: 18px; height: 18px; accent-color: #1C1917"></label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700">How did you secure this?
+          <textarea rows="4" style="resize: vertical; padding: 10px; border: 2px solid #1C1917; border-radius: 10px; font: 400 13px/1.5 Geist, sans-serif; color: #1C1917; background: #FFFFFF">Private subnet behind the gateway. Card data encrypted at rest. Uses an IAM role to reach Postgres and the queue.</textarea>
+        </label>
+        <div style="display: flex; gap: 8px; align-items: flex-start; padding: 10px; border-radius: 10px; background: #FBEFC5">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C1917" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 16px; margin-top: 2px"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+          <span style="font-size: 12px; line-height: 1.45">Hint: which tables does this service actually need?</span>
+        </div>
+      </section>
+
+      <section style="display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 11px; letter-spacing: 0.08em; color: #57534E">ATTACK REPLAY</span>
+        <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+          <div style="{{s.rowStyle}}">
+            <span style="{{s.badgeStyle}}">{{s.n}}</span>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <div style="display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap">
+                <span style="font-size: 13px; font-weight: 700">{{s.title}}</span>
+                <span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #57534E">{{s.id}}</span>
+              </div>
+              <span style="font-size: 12px; line-height: 1.45; color: #44403C">{{s.detail}}</span>
+            </div>
+          </div>
+        </sc-for>
+        <a href="Debrief.dc.html" style="display: flex; align-items: center; justify-content: center; height: 44px; border: 2px solid #1C1917; border-radius: 12px; background: #1C1917; color: #F4EEE2; font-weight: 700; font-size: 14px; text-decoration: none; box-shadow: 4px 4px 0 {{accent}}">See debrief</a>
+      </section>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#C8371E","options":["#C8371E","#B91C1C","#7C3AED","#1D4ED8"]},"showAttack":{"editor":"boolean","default":true},"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C8371E';
+    const fromProps = this.props.showAttack ?? true;
+    const showAttack = this.state && this.state.attack !== undefined ? this.state.attack : fromProps;
+    const grey = '#A8A29E';
+    const hLine = showAttack ? ('repeating-linear-gradient(90deg, ' + accent + ' 0 10px, transparent 10px 16px)') : grey;
+    const vLine = showAttack ? ('repeating-linear-gradient(180deg, ' + accent + ' 0 10px, transparent 10px 16px)') : grey;
+    const ink = '#1C1917';
+    const coins = [];
+    for (let i = 0; i < 6; i++) {
+      const spent = i < 4;
+      coins.push({ style: 'width: 16px; height: 16px; border-radius: 8px; box-sizing: border-box; border: 2px solid ' + (spent ? '#57534E' : ink) + '; background: ' + (spent ? '#2E2A26' : '#F5C542') });
+    }
+    const lvl = (label, state) => {
+      const base = 'width: 36px; height: 36px; border-radius: 18px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; font: 700 13px Geist Mono, monospace; border: 2px solid ' + ink + ';';
+      if (state === 'done') return { label, style: base + ' background: #0F766E; color: #FFFFFF' };
+      if (state === 'now') return { label, style: base + ' background: ' + accent + '; color: #FFFFFF; box-shadow: 3px 3px 0 ' + ink + '; transform: scale(1.12)' };
+      return { label, style: base + ' background: #E9E1D0; color: #57534E; border-style: dashed' };
+    };
+    const dot = (c) => 'width: 12px; height: 12px; flex: 0 0 12px; border-radius: 4px; background: ' + c;
+    const card = (rot, placed) => 'flex: 0 0 120px; height: 168px; margin-left: -10px; display: flex; flex-direction: column; border: 2px solid ' + ink + '; border-radius: 12px; background: #FFFFFF; overflow: hidden; box-shadow: 3px 3px 0 ' + ink + '; transform: rotate(' + rot + 'deg)' + (placed ? '; opacity: .5' : '; transform: rotate(' + rot + 'deg) translateY(-10px)');
+    const band = (c) => 'background: ' + c + '; padding: 6px 10px; border-bottom: 2px solid ' + ink;
+    const hitBadge = 'flex: 0 0 26px; width: 26px; height: 26px; border-radius: 13px; background: ' + accent + '; border: 2px solid ' + ink + '; color: #FFFFFF; font: 700 11px Geist Mono, monospace; display: flex; align-items: center; justify-content: center; box-sizing: border-box';
+    const heldBadge = 'flex: 0 0 26px; width: 26px; height: 26px; border-radius: 13px; background: #0F766E; border: 2px solid ' + ink + '; color: #FFFFFF; font: 700 11px Geist Mono, monospace; display: flex; align-items: center; justify-content: center; box-sizing: border-box';
+    const row = 'display: flex; gap: 10px; align-items: flex-start; padding: 10px; border: 2px solid ' + ink + '; border-radius: 12px; background: #FFFFFF';
+    return {
+      accent,
+      showAttack,
+      hLine,
+      vLine,
+      marchX: showAttack ? 'mx' : '',
+      marchUp: showAttack ? 'mu' : '',
+      hitBorder: showAttack ? ('3px solid ' + accent) : ('2px solid ' + ink),
+      hitShadow: showAttack ? ('4px 4px 0 ' + accent) : ('4px 4px 0 ' + ink),
+      runLabel: showAttack ? 'Pause attack' : 'Run attack',
+      toggleAttack: () => this.setState({ attack: !showAttack }),
+      coins,
+      levels: [lvl('1', 'done'), lvl('2', 'done'), lvl('3', 'now'), lvl('4', 'locked'), lvl('5', 'locked')],
+      components: [
+        { label: 'Internet', dot: dot('#1C1917') }, { label: 'API gateway', dot: dot('#2B59C3') },
+        { label: 'Payments', dot: dot('#B7791F') }, { label: 'Postgres', dot: dot('#0F766E') },
+        { label: 'Secrets', dot: dot('#6D28D9') }, { label: 'Queue', dot: dot('#B7791F') }
+      ],
+      hand: [
+        { kind: 'EDGE', name: 'WAF', effect: 'Blocks injection on public routes', status: 'ON GATEWAY', cost: '1', cardStyle: card(-5, true), bandStyle: band('#2B59C3') },
+        { kind: 'NETWORK', name: 'Private subnet', effect: 'No route in from the internet', status: 'ON SECRETS', cost: '1', cardStyle: card(-2, true), bandStyle: band('#0F766E') },
+        { kind: 'DATA', name: 'Encryption', effect: 'Protects data at rest', status: 'ON POSTGRES', cost: '1', cardStyle: card(1, true), bandStyle: band('#0F766E') },
+        { kind: 'IDENTITY', name: 'MFA', effect: 'Stops stolen passwords working', status: 'ON ADMIN', cost: '1', cardStyle: card(3, true), bandStyle: band('#6D28D9') },
+        { kind: 'IDENTITY', name: 'Least privilege', effect: 'Roles only get what they need', status: 'IN HAND', cost: '1', cardStyle: card(-3, false), bandStyle: band('#6D28D9') },
+        { kind: 'EDGE', name: 'Rate limit', effect: 'Slows brute force and scraping', status: 'IN HAND', cost: '1', cardStyle: card(4, false), bandStyle: band('#2B59C3') }
+      ],
+      steps: [
+        { n: '1', title: 'Exploit public endpoint', id: 'T1190', detail: 'WAF stopped injection, but /refunds has no auth check.', badgeStyle: hitBadge, rowStyle: row },
+        { n: '2', title: 'Steal role credentials', id: 'T1552.005', detail: 'Read the container’s IAM credentials from the metadata service.', badgeStyle: hitBadge, rowStyle: row },
+        { n: '3', title: 'Read card data', id: 'T1078.004', detail: 'The role can query every table in Postgres.', badgeStyle: hitBadge, rowStyle: row + '; box-shadow: 3px 3px 0 ' + accent },
+        { n: '✕', title: 'Direct secrets access', id: 'T1552', detail: 'Blocked: no public endpoint.', badgeStyle: heldBadge, rowStyle: row }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

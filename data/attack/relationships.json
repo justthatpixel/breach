@@ -1,0 +1,82 @@
+[
+  {
+    "mitigation_id": "M1018",
+    "technique_id": "T1078.004"
+  },
+  {
+    "mitigation_id": "M1018",
+    "technique_id": "T1110"
+  },
+  {
+    "mitigation_id": "M1018",
+    "technique_id": "T1528"
+  },
+  {
+    "mitigation_id": "M1018",
+    "technique_id": "T1530"
+  },
+  {
+    "mitigation_id": "M1026",
+    "technique_id": "T1078.004"
+  },
+  {
+    "mitigation_id": "M1026",
+    "technique_id": "T1190"
+  },
+  {
+    "mitigation_id": "M1030",
+    "technique_id": "T1190"
+  },
+  {
+    "mitigation_id": "M1032",
+    "technique_id": "T1078.004"
+  },
+  {
+    "mitigation_id": "M1032",
+    "technique_id": "T1110"
+  },
+  {
+    "mitigation_id": "M1032",
+    "technique_id": "T1530"
+  },
+  {
+    "mitigation_id": "M1035",
+    "technique_id": "T1190"
+  },
+  {
+    "mitigation_id": "M1035",
+    "technique_id": "T1552.005"
+  },
+  {
+    "mitigation_id": "M1036",
+    "technique_id": "T1078.004"
+  },
+  {
+    "mitigation_id": "M1036",
+    "technique_id": "T1110"
+  },
+  {
+    "mitigation_id": "M1037",
+    "technique_id": "T1190"
+  },
+  {
+    "mitigation_id": "M1037",
+    "technique_id": "T1498"
+  },
+  {
+    "mitigation_id": "M1037",
+    "technique_id": "T1530"
+  },
+  {
+    "mitigation_id": "M1037",
+    "technique_id": "T1552.005"
+  },
+  {
+    "mitigation_id": "M1041",
+    "technique_id": "T1530"
+  },
+  {
+    "mitigation_id": "M1050",
+    "technique_id": "T1190"
+  }
+]

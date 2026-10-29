@@ -1,0 +1,22 @@
+id: 03-payments
+title: Payments backend
+brief: >
+  This payments backend goes live Friday. It stores card details
+  and has to stay up 24/7.
+threat_level: high
+budget: 6
+components:
+  - { id: internet, type: internet,    label: Internet }
+  - { id: gateway,  type: api_gateway, label: API gateway, public: true }
+  - { id: payments, type: container,   label: Payments }
+  - { id: postgres, type: database,    label: Postgres, asset: true }
+  - { id: secrets,  type: secrets,     label: Secrets }
+  - { id: queue,    type: queue,       label: Queue }
+edges:
+  - [internet, gateway]
+  - [gateway, payments]
+  - [payments, postgres]
+  - [payments, secrets]
+  - [payments, queue]
+entry_points: [internet]
+cards_available: [waf, private_subnet, encryption, mfa, least_privilege, rate_limit]
