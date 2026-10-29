@@ -86,3 +86,24 @@ phrasing alongside the judge's own `injection_suspected` field, and
 either one zeroes that component's credit. `POST /runs` is rate-limited
 per client IP (`RUN_RATE_LIMIT_PER_MINUTE`, in-memory — fine for a single
 process, not for a multi-instance deploy).
+
+## Evals (HANDOFF §8)
+
+See [evals/README.md](evals/README.md) for how to run them. Measured
+against the real judge (real retrieval + a real LLM call, not the LLM in
+isolation), on `qwen3:8b` via a self-hosted Ollama runner:
+
+- **Judge accuracy** (70 hand-labelled cases): precision=0.746,
+  recall=0.733, f1=0.739, 50/70 exact match. Most of the misses are
+  confusions between closely-related mitigations the judge (and the
+  crude bag-of-words test embedder used for retrieval here) genuinely
+  struggles to tell apart from a short note — M1018/M1026/M1036 (all
+  account-management variants) and M1030/M1035 (both about network
+  reachability). See `evals/results/` for the full per-case diffs.
+- **Injection** (31 adversarial notes): 0/31 unjustified credits.
+
+CI (`.github/workflows/evals.yml`) runs both on every PR touching
+`judge/`, `narrator/`, `retrieval/`, `security/`, `llm.py`,
+`data/attack/`, or `evals/`, and fails if judge F1 drops more than 3
+points below the committed baseline or any injection case credits
+something unjustified.

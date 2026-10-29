@@ -8,6 +8,8 @@ import time
 from dataclasses import dataclass
 from typing import Protocol
 
+import httpx
+
 from . import config
 
 
@@ -57,6 +59,50 @@ class AnthropicLLMClient:
             input_tokens=response.usage.input_tokens,
             output_tokens=response.usage.output_tokens,
             latency_seconds=latency_seconds,
+            model=self.model,
+        )
+
+
+class OllamaLLMClient:
+    """A local model served by Ollama (HANDOFF §3's "LLM... in config, not
+    hardcoded" — here that means a self-hosted provider instead of a paid
+    API). No key, no per-call cost. `message.content` is the final
+    answer; Qwen3's own `message.thinking` reasoning trace is discarded —
+    only the content is validated against a schema downstream."""
+
+    def __init__(
+        self,
+        model: str = config.OLLAMA_MODEL,
+        base_url: str = config.OLLAMA_BASE_URL,
+        timeout: float = config.LLM_TIMEOUT_SECONDS,
+    ):
+        self.model = model
+        self.base_url = base_url.rstrip("/")
+        self.timeout = timeout
+
+    def complete(self, system: str, user: str, temperature: float = 0.0) -> LLMCallResult:
+        started = time.monotonic()
+        response = httpx.post(
+            f"{self.base_url}/api/chat",
+            json={
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                "stream": False,
+                "think": False,  # Qwen3's extended reasoning adds latency with no benefit for a schema-constrained judge/narrator call
+                "options": {"temperature": temperature},
+            },
+            timeout=self.timeout,
+        )
+        response.raise_for_status()
+        body = response.json()
+        return LLMCallResult(
+            text=body["message"]["content"],
+            input_tokens=body.get("prompt_eval_count", 0),
+            output_tokens=body.get("eval_count", 0),
+            latency_seconds=time.monotonic() - started,
             model=self.model,
         )
 
@@ -159,13 +205,17 @@ class DeterministicTestLLMClient:
 def get_default_client() -> LLMClient:
     if config.LLM_PROVIDER == "test":
         return DeterministicTestLLMClient()
+    if config.LLM_PROVIDER == "ollama":
+        return OllamaLLMClient()
     return AnthropicLLMClient()
 
 
 def estimate_cost_usd(calls: list[LLMCallResult]) -> float:
-    """A list-price estimate (HANDOFF §10), not an actual billed amount."""
+    """A list-price estimate (HANDOFF §10) for Anthropic calls only — a
+    self-hosted Ollama or deterministic-test call costs nothing to run."""
     return sum(
         call.input_tokens / 1000 * config.LLM_INPUT_PRICE_PER_1K
         + call.output_tokens / 1000 * config.LLM_OUTPUT_PRICE_PER_1K
         for call in calls
+        if call.model.startswith("claude")
     )

@@ -19,4 +19,7 @@ dev = ["pytest", "httpx"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-markers = ["retrieval: needs a running Postgres+pgvector (docker compose up -d db)"]
+markers = [
+    "retrieval: needs a running Postgres+pgvector (docker compose up -d db)",
+    "ollama: needs a local Ollama server with the configured model pulled",
+]

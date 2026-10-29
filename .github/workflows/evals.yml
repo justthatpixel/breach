@@ -1,0 +1,64 @@
+name: evals
+
+on:
+  pull_request:
+    paths:
+      - "apps/api/breach/judge/**"
+      - "apps/api/breach/narrator/**"
+      - "apps/api/breach/retrieval/**"
+      - "apps/api/breach/security/**"
+      - "apps/api/breach/llm.py"
+      - "data/attack/**"
+      - "evals/**"
+
+jobs:
+  evals:
+    # Self-hosted so the gate calls a real local LLM (Ollama + Qwen3,
+    # HANDOFF §8.3's "measurable" judge quality, not a free stand-in) at
+    # no per-run API cost. See evals/README.md.
+    runs-on: [self-hosted, macOS, breach-llm]
+    env:
+      LLM_PROVIDER: ollama
+      EMBEDDING_PROVIDER: test
+      DATABASE_URL: postgresql://breach:breach@localhost:5433/breach
+      GITHUB_REPOSITORY: ${{ github.repository }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start Postgres
+        run: |
+          docker compose up -d db
+          for i in $(seq 1 30); do
+            docker compose exec -T db pg_isready -U breach -d breach && break
+            sleep 2
+          done
+
+      - name: Ensure the Ollama model is pulled
+        run: ollama list | grep -q "${OLLAMA_MODEL:-qwen3:8b}" || ollama pull "${OLLAMA_MODEL:-qwen3:8b}"
+
+      - name: Install breach
+        run: pip install -e ".[dev]"
+        working-directory: apps/api
+
+      - name: Bootstrap retrieval (migrate + seed + embed)
+        run: |
+          python -m breach.retrieval.migrate
+          python -m breach.retrieval.seed
+          python -c "
+          from breach.retrieval.embed_mitigations import embed_mitigations
+          from breach.retrieval import DeterministicTestEmbedder
+          embed_mitigations(provider=DeterministicTestEmbedder())
+          "
+        working-directory: apps/api
+
+      - name: Run judge eval
+        run: python -m evals.judge.run_judge_eval
+        continue-on-error: true
+
+      - name: Run injection eval
+        run: python -m evals.injection.run_injection_eval
+        continue-on-error: true
+
+      - name: Gate on results + comment on the PR
+        run: python evals/ci_gate.py

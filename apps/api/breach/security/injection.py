@@ -22,6 +22,19 @@ _INJECTION_PATTERNS = [
     re.compile(r"credit (all|every|each)", re.I),
     re.compile(r"\boverride\b", re.I),
     re.compile(r"\bthis is (a|the) system\b", re.I),
+    # Meta-commentary aimed at whatever model reads the notes next — the
+    # "instructions hidden in a plausible-looking note" case (HANDOFF
+    # §8.2): a genuine security claim can still carry a trailing attempt
+    # to talk directly to the judge.
+    re.compile(r"\bfor the model\b", re.I),
+    re.compile(r"\bparsing this note\b", re.I),
+    re.compile(r"\bif you are (an? )?(ai|model|llm)\b", re.I),
+    re.compile(r"\bas the (judge|model|ai|grading model)\b", re.I),
+    re.compile(r"\bnote to the (grading )?model\b", re.I),
+    re.compile(r"(don'?t|doesn'?t) apply to\b", re.I),
+    re.compile(r"\bexempt from\b", re.I),
+    re.compile(r"\bskip (your|the) (evidence|check|verification)\b", re.I),
+    re.compile(r"\btreat .{0,30} as (equivalent to crediting|credited)\b", re.I),
 ]
 
 
