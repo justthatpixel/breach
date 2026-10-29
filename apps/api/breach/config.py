@@ -21,12 +21,15 @@ EMBEDDING_DIM = int(_env("EMBEDDING_DIM", "1536"))
 
 RETRIEVAL_TOP_K = int(_env("RETRIEVAL_TOP_K", "5"))
 
-# LLM config (M5). "anthropic" (real, needs ANTHROPIC_API_KEY) or "test"
-# (deterministic, no network — used by the test suite and local/e2e runs
-# without a key), same split as EMBEDDING_PROVIDER above.
+# LLM config (M5/M6). "anthropic" (real, needs ANTHROPIC_API_KEY),
+# "ollama" (self-hosted, free — the model used for eval numbers and the
+# CI eval gate, see evals/), or "test" (deterministic, no network — used
+# by the rest of the test suite), same split as EMBEDDING_PROVIDER above.
 LLM_PROVIDER = _env("LLM_PROVIDER", "anthropic")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 LLM_MODEL = _env("LLM_MODEL", "claude-sonnet-5-5")
+OLLAMA_BASE_URL = _env("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = _env("OLLAMA_MODEL", "qwen3:8b")
 JUDGE_TEMPERATURE = float(_env("JUDGE_TEMPERATURE", "0"))
 JUDGE_CONFIDENCE_THRESHOLD = float(_env("JUDGE_CONFIDENCE_THRESHOLD", "0.6"))
 LLM_TIMEOUT_SECONDS = float(_env("LLM_TIMEOUT_SECONDS", "20"))

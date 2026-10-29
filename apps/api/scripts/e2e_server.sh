@@ -6,8 +6,11 @@
 # don't need the DB, and the e2e spec skips itself if /runs does.
 set -uo pipefail
 cd "$(dirname "$0")/.."
-# shellcheck disable=SC1091
-source ../../.venv/bin/activate
+# CI installs breach into the runner's own Python, with no venv to activate.
+if [ -f ../../.venv/bin/activate ]; then
+  # shellcheck disable=SC1091
+  source ../../.venv/bin/activate
+fi
 
 export LLM_PROVIDER=test
 export EMBEDDING_PROVIDER=test
