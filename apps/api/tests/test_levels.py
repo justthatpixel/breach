@@ -3,12 +3,7 @@ import yaml
 
 from breach.levels import LevelValidationError, load_game_map, load_level
 
-from .conftest import GAME_MAP_PATH, LEVELS_DIR
-
-
-@pytest.fixture(scope="session")
-def game_map(attack_data):
-    return load_game_map(GAME_MAP_PATH, attack_data)
+from .conftest import LEVELS_DIR
 
 
 def test_game_map_loads_and_cross_validates(game_map):

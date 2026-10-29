@@ -1,5 +1,26 @@
 # Changelog
 
+## M2: Deterministic engine
+
+- `breach/engine/` — pure, I/O-free attack engine: simple-path enumeration
+  (`graph.py`), blocking rules (`blocking.py`), scoring and grading
+  (`scoring.py`, `config.py`), and the `run_engine()` orchestrator
+  (`run.py`). 100% statement coverage, 45 tests passing across the repo.
+- Scoring formula and grade table (`engine/config.py`) are not in HANDOFF.md
+  §5 — they're a documented placeholder I designed, not a locked decision.
+- **Found and flagged a contradiction** between HANDOFF.md §5's described
+  Level 3 golden test and real MITRE ATT&CK data: the literal card
+  placement (WAF@gateway, private_subnet@secrets, encryption+MFA@postgres)
+  does not produce the claimed breach path. WAF genuinely blocks T1190 in
+  real data (so Brute Force/T1110 is what actually gets through instead),
+  and MFA genuinely stops T1078.004 rather than letting it slide — so that
+  loadout is not breached at all, let alone via the stated path.
+  Found an alternate loadout — mfa@gateway, least_privilege@payments,
+  encryption@postgres, private_subnet@secrets (unused, off-path) — that
+  reproduces the exact stated path (T1190 → T1552.005 → T1078.004) *and*
+  the "4 cards used / 2 coins left" detail visible in the game-screen
+  mockup. Confirmed with the user and locked in as `test_engine_golden.py`.
+
 ## M1: Data foundations
 
 - `scripts/ingest_attack.py` downloads the MITRE Enterprise ATT&CK STIX
