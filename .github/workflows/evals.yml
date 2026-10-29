@@ -20,7 +20,11 @@ jobs:
     env:
       LLM_PROVIDER: ollama
       EMBEDDING_PROVIDER: test
-      DATABASE_URL: postgresql://breach:breach@localhost:5433/breach
+      # A dedicated port and container name, not docker-compose.yml's own
+      # service: this runner is also the dev machine, where that compose
+      # project's db already owns 5433 — reusing it would either collide
+      # on the port or silently depend on dev-machine state persisting.
+      DATABASE_URL: postgresql://breach:breach@localhost:5434/breach
       GITHUB_REPOSITORY: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
@@ -28,9 +32,12 @@ jobs:
 
       - name: Start Postgres
         run: |
-          docker compose up -d db
+          docker rm -f breach-ci-db >/dev/null 2>&1 || true
+          docker run -d --name breach-ci-db \
+            -e POSTGRES_DB=breach -e POSTGRES_USER=breach -e POSTGRES_PASSWORD=breach \
+            -p 5434:5432 pgvector/pgvector:pg16
           for i in $(seq 1 30); do
-            docker compose exec -T db pg_isready -U breach -d breach && break
+            docker exec breach-ci-db pg_isready -U breach -d breach && break
             sleep 2
           done
 
@@ -62,3 +69,7 @@ jobs:
 
       - name: Gate on results + comment on the PR
         run: python evals/ci_gate.py
+
+      - name: Stop Postgres
+        if: always()
+        run: docker rm -f breach-ci-db >/dev/null 2>&1 || true
