@@ -1,6 +1,8 @@
 import { create } from "zustand";
-import { cardCatalogue, level3, mockRunLevel3 } from "@/fixtures/level3";
-import type { MockRunResult } from "@/lib/types";
+import { cardCatalogue, level3 } from "@/fixtures/level3";
+import { createRun } from "@/lib/runApi";
+import { mapRunToDebrief, mapRunToReplay } from "@/lib/runMapping";
+import type { DebriefData, MockRunResult } from "@/lib/types";
 
 type AttackPhase = "idle" | "running" | "done";
 
@@ -11,6 +13,8 @@ interface GameState {
   attackPhase: AttackPhase;
   visibleSteps: number;
   runResult: MockRunResult | null;
+  debrief: DebriefData | null;
+  runError: string | null;
 
   selectComponent: (id: string) => void;
   playCard: (cardId: string) => void;
@@ -47,6 +51,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   attackPhase: "idle",
   visibleSteps: 0,
   runResult: null,
+  debrief: null,
+  runError: null,
 
   selectComponent: (id) => {
     if (get().attackPhase !== "idle") return;
@@ -82,15 +88,31 @@ export const useGameStore = create<GameState>((set, get) => ({
       attackPhase: "idle",
       visibleSteps: 0,
       runResult: null,
+      debrief: null,
+      runError: null,
     });
   },
 
   runAttack: () => {
-    set({
-      attackPhase: "running",
-      visibleSteps: 0,
-      runResult: mockRunLevel3(),
-    });
+    const { placements, notes } = get();
+    set({ attackPhase: "running", visibleSteps: 0, runResult: null, debrief: null, runError: null });
+
+    const defences = Object.fromEntries(
+      level3.components
+        .filter((c) => (placements[c.id]?.length ?? 0) > 0 || (notes[c.id]?.trim().length ?? 0) > 0)
+        .map((c) => [c.id, { cards: placements[c.id] ?? [], notes: notes[c.id] ?? "" }])
+    );
+
+    createRun(level3.id, defences)
+      .then((run) => {
+        set({ runResult: mapRunToReplay(run), debrief: mapRunToDebrief(run) });
+      })
+      .catch((error: unknown) => {
+        set({
+          attackPhase: "idle",
+          runError: error instanceof Error ? error.message : "Run failed.",
+        });
+      });
   },
 
   revealNextStep: () => {

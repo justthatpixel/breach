@@ -21,9 +21,24 @@ EMBEDDING_DIM = int(_env("EMBEDDING_DIM", "1536"))
 
 RETRIEVAL_TOP_K = int(_env("RETRIEVAL_TOP_K", "5"))
 
-# LLM config (M5)
+# LLM config (M5). "anthropic" (real, needs ANTHROPIC_API_KEY) or "test"
+# (deterministic, no network — used by the test suite and local/e2e runs
+# without a key), same split as EMBEDDING_PROVIDER above.
+LLM_PROVIDER = _env("LLM_PROVIDER", "anthropic")
+ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 LLM_MODEL = _env("LLM_MODEL", "claude-sonnet-5-5")
 JUDGE_TEMPERATURE = float(_env("JUDGE_TEMPERATURE", "0"))
 JUDGE_CONFIDENCE_THRESHOLD = float(_env("JUDGE_CONFIDENCE_THRESHOLD", "0.6"))
 LLM_TIMEOUT_SECONDS = float(_env("LLM_TIMEOUT_SECONDS", "20"))
 LLM_RETRY_COUNT = int(_env("LLM_RETRY_COUNT", "1"))
+
+# List-price estimate only (HANDOFF §10's "total cost estimate") — not an
+# actual billed amount, so it's configurable rather than baked in.
+LLM_INPUT_PRICE_PER_1K = float(_env("LLM_INPUT_PRICE_PER_1K", "0.003"))
+LLM_OUTPUT_PRICE_PER_1K = float(_env("LLM_OUTPUT_PRICE_PER_1K", "0.015"))
+
+# Security of the AI itself (HANDOFF §7.4): input limits on player notes.
+MAX_NOTES_LENGTH = int(_env("MAX_NOTES_LENGTH", "1000"))
+
+# Rate limit on POST /runs (HANDOFF §7.4), requests per minute per client IP.
+RUN_RATE_LIMIT_PER_MINUTE = int(_env("RUN_RATE_LIMIT_PER_MINUTE", "10"))

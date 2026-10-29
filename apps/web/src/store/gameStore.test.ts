@@ -1,6 +1,44 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { level3 } from "@/fixtures/level3";
+import type { RunResponse } from "@/lib/runApi";
 import { budgetUsed, cardsInHand, useGameStore } from "./gameStore";
+
+const FAKE_RUN: RunResponse = {
+  id: "fake-run-id",
+  level_id: level3.id,
+  engine_output: {
+    paths: [
+      {
+        steps: [
+          { step: 1, from: "internet", to: "gateway", technique_id: "T1190", blocked: false, blocked_by: null },
+          { step: 2, from: "gateway", to: "payments", technique_id: "T1552.005", blocked: true, blocked_by: "M1026" },
+        ],
+      },
+    ],
+    paths_total: 1,
+    paths_blocked: 0,
+    techniques_attempted: 2,
+    techniques_stopped: 1,
+    budget_used: 4,
+    budget_total: 6,
+    score: 0.5,
+    grade: "C",
+  },
+  narrator_output: {
+    steps: [
+      { step: 1, technique_id: "T1190", line: "Through at gateway." },
+      { step: 2, technique_id: "T1552.005", line: "Blocked at payments." },
+    ],
+    debrief: { through: ["T1190"], held: ["T1552.005"], tips: ["Tighten the gateway."] },
+  },
+  judge_output: {},
+  llm_calls: [],
+  total_cost_usd_estimate: 0,
+};
+
+vi.mock("@/lib/runApi", () => ({
+  createRun: vi.fn(() => Promise.resolve(FAKE_RUN)),
+}));
 
 beforeEach(() => {
   useGameStore.getState().reset();
@@ -72,12 +110,17 @@ describe("useGameStore", () => {
     expect(useGameStore.getState().notes.payments).toBe("least privilege role");
   });
 
-  it("runAttack loads the mocked result and reveals steps one at a time", () => {
+  it("runAttack calls the API and reveals the returned steps one at a time", async () => {
     useGameStore.getState().runAttack();
+    const midRun = useGameStore.getState();
+    expect(midRun.attackPhase).toBe("running");
+    expect(midRun.visibleSteps).toBe(0);
+
+    await vi.waitFor(() => expect(useGameStore.getState().runResult).not.toBeNull());
+
     const afterRun = useGameStore.getState();
-    expect(afterRun.attackPhase).toBe("running");
-    expect(afterRun.visibleSteps).toBe(0);
-    expect(afterRun.runResult?.steps.length).toBeGreaterThan(0);
+    expect(afterRun.runResult?.steps.length).toBe(2);
+    expect(afterRun.debrief?.grade).toBe("C");
 
     const total = afterRun.runResult!.steps.length;
     for (let i = 0; i < total; i++) useGameStore.getState().revealNextStep();

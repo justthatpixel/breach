@@ -35,5 +35,10 @@ CREATE TABLE IF NOT EXISTS runs (
     defences JSONB NOT NULL,
     judge_output JSONB,
     engine_output JSONB,
+    narrator_output JSONB,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- ADD COLUMN IF NOT EXISTS so this stays idempotent against a database
+-- that was migrated before narrator_output existed (M5).
+ALTER TABLE runs ADD COLUMN IF NOT EXISTS narrator_output JSONB;

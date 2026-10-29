@@ -9,7 +9,11 @@ import { useGameStore } from "@/store/gameStore";
 
 export function DebriefScreen() {
   const reset = useGameStore((s) => s.reset);
-  const data = debrief3;
+  const storedDebrief = useGameStore((s) => s.debrief);
+  // Falls back to the M3 sample fixture only if the debrief is opened
+  // without a completed run (e.g. a direct link) — the real run data is
+  // in the store once "Run attack" has completed.
+  const data = storedDebrief ?? debrief3;
 
   const bars = Array.from({ length: data.share.totalAttacks }, (_, i) => i < data.share.stopped);
 

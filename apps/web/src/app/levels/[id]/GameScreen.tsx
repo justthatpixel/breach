@@ -24,6 +24,7 @@ export function GameScreen() {
     attackPhase,
     visibleSteps,
     runResult,
+    runError,
     selectComponent,
     playCard,
     setNote,
@@ -68,12 +69,15 @@ export function GameScreen() {
   const attackRunning = attackPhase === "running";
   const debriefReady = attackPhase === "done";
 
-  const redTeamLine =
-    debriefReady && runResult
+  const redTeamLine = runError
+    ? { techniqueId: "ERROR", text: runError }
+    : debriefReady && runResult
       ? runResult.redTeamLine
       : revealedSteps.length > 0
         ? { techniqueId: revealedSteps[revealedSteps.length - 1].techniqueId, text: revealedSteps[revealedSteps.length - 1].detail }
-        : null;
+        : attackRunning
+          ? { techniqueId: "…", text: "Running the attack…" }
+          : null;
 
   return (
     <div className={styles.page}>

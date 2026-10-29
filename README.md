@@ -52,3 +52,37 @@ Embeddings are behind an interface (`breach/retrieval/embeddings.py`) —
 `MiniMaxEmbeddingProvider` is the real one (MiniMax's `embo-01`, called at
 `api.minimax.io`), `DeterministicTestEmbedder` is the test one. Swap via
 `EMBEDDING_PROVIDER` in `.env`.
+
+## Running the API (judge + narrator + engine)
+
+```bash
+docker compose up -d db
+cd apps/api && cp .env.example .env   # fill in ANTHROPIC_API_KEY for the real judge/narrator
+source ../../.venv/bin/activate
+python -m breach.retrieval.migrate
+python -m breach.retrieval.seed
+python -m breach.retrieval.embed_mitigations   # or EMBEDDING_PROVIDER=test, see above
+uvicorn breach.app:app --reload
+```
+
+`POST /runs` is the whole loop (HANDOFF §10): the judge credits the
+player's notes from retrieval candidates, the deterministic engine (M2)
+decides what actually breaches, and the narrator turns that into replay
+and debrief text. Every LLM boundary is schema-validated — the judge can
+only credit mitigations from the candidate list with evidence that's a
+real substring of the notes, and the narrator can only mention technique
+IDs the engine actually produced.
+
+The LLM is behind the same kind of interface as embeddings
+(`breach/llm.py`): `AnthropicLLMClient` is the real one (needs
+`ANTHROPIC_API_KEY`), `DeterministicTestLLMClient` is a no-network stand-in
+used when `LLM_PROVIDER=test` — what the test suite and `npm run
+test:e2e` use, so neither needs a key.
+
+Player notes are untrusted input (HANDOFF §7): control characters are
+stripped and length-capped before they reach a prompt
+(`breach/security/injection.py`), a heuristic flags common injection
+phrasing alongside the judge's own `injection_suspected` field, and
+either one zeroes that component's credit. `POST /runs` is rate-limited
+per client IP (`RUN_RATE_LIMIT_PER_MINUTE`, in-memory — fine for a single
+process, not for a multi-instance deploy).
