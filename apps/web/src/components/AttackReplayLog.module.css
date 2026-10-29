@@ -1,0 +1,104 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heading {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.rowHit {
+  box-shadow: 3px 3px 0 var(--accent);
+}
+
+.badge {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  border: 2px solid var(--ink);
+  color: #ffffff;
+  font: 700 11px var(--font-mono);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.badgeHit {
+  background: var(--accent);
+}
+
+.badgeHeld {
+  background: var(--data-teal);
+}
+
+.detailWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.detailTop {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.techniqueId {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.detail {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.empty {
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.debriefLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.debriefLink[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
