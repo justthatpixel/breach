@@ -1,5 +1,46 @@
 # Changelog
 
+## M4: Retrieval
+
+- `docker-compose.yml` — a `db` service (`pgvector/pgvector:pg16`) on
+  port 5433, healthchecked.
+- `breach/retrieval/`: `schema.sql` + `migrate.py` (techniques,
+  mitigations, technique_mitigations, mitigation_embeddings, runs — the
+  HANDOFF §4.4 tables), `seed.py` (idempotent upsert of
+  `data/attack/*.json` into Postgres), `embed_mitigations.py`,
+  `retrieve.py` (the hybrid retrieval function).
+- **Embedding provider changed from OpenAI to MiniMax** (`embo-01` via
+  `api.minimax.io/v1/embeddings`) — the user supplied a MiniMax key
+  instead of the OpenAI one decided in M1's open questions, so this
+  supersedes that decision. The provider sits behind
+  `breach/retrieval/embeddings.py`'s `EmbeddingProvider` interface
+  (HANDOFF §3: "keep behind an interface"), so swapping again later is a
+  one-file change.
+- Real MiniMax embeddings could not actually be generated in this
+  environment: two different MiniMax keys both got an immediate,
+  persistent `rate limit exceeded(RPM)` from `api.minimax.io`, even after
+  waiting — consistent with this sandbox's outbound IP being throttled by
+  MiniMax rather than a per-key quota issue. `MiniMaxEmbeddingProvider` is
+  fully implemented and does the right thing when it gets a real error
+  back (raises with the API's own message) — it just hasn't been run
+  successfully end to end yet. `mitigation_embeddings` is currently
+  populated by `DeterministicTestEmbedder`, a local bag-of-words embedder
+  with no network dependency, picked for the four retrieval test cases
+  below. Re-run `embed_mitigations.py` with a working key from an
+  unthrottled network to get real semantic embeddings.
+- Hybrid retrieval (HANDOFF §6.1): structured filter first (mitigations
+  relevant to the component's own techniques, via
+  `technique_mitigations`), then vector rank that filtered set by cosine
+  distance to the notes embedding (pgvector `<=>`). Never surfaces a
+  mitigation that isn't structurally relevant, however it scores on
+  embeddings.
+- Tests: `tests/test_retrieval.py` migrates, seeds and embeds (with the
+  deterministic embedder) against a real Postgres, and skips itself
+  cleanly if Docker/Postgres isn't up. Four known-notes cases each land
+  the expected mitigation in the top 3; plus a structured-filter-excludes
+  case and an empty-candidates case for a pass-through component type.
+  51 tests pass repo-wide with the DB up, 45 pass (6 skipped) without it.
+
 ## M3: Frontend with mocked backend
 
 - `apps/web/` — Next.js (App Router) + TypeScript, React Flow for the

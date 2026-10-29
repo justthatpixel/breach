@@ -7,6 +7,9 @@ dependencies = [
     "uvicorn",
     "pydantic>=2",
     "pyyaml",
+    "psycopg[binary]",
+    "pgvector",
+    "httpx",
 ]
 
 [project.optional-dependencies]
@@ -15,3 +18,4 @@ dev = ["pytest", "httpx"]
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+markers = ["retrieval: needs a running Postgres+pgvector (docker compose up -d db)"]

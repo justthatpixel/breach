@@ -1,0 +1,19 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: breach
+      POSTGRES_USER: breach
+      POSTGRES_PASSWORD: breach
+    ports:
+      - "5433:5432"
+    volumes:
+      - breach_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U breach -d breach"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+volumes:
+  breach_db_data:
