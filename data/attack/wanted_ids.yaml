@@ -1,0 +1,22 @@
+# Names here are what HANDOFF.md §4.1 claims. ingest_attack.py checks every
+# ID exists in the real MITRE data and that its name matches; it fails loudly
+# on any mismatch instead of silently trusting this file.
+techniques:
+  T1190: Exploit Public-Facing Application
+  T1078.004: "Valid Accounts: Cloud Accounts"
+  T1552.005: "Unsecured Credentials: Cloud Instance Metadata API"
+  T1530: Data from Cloud Storage
+  T1110: Brute Force
+  T1528: Steal Application Access Token
+  T1498: Network Denial of Service
+
+mitigations:
+  M1032: Multi-factor Authentication
+  M1026: Privileged Account Management
+  M1018: User Account Management
+  M1050: Exploit Protection
+  M1030: Network Segmentation
+  M1035: Limit Access to Resource Over Network
+  M1041: Encrypt Sensitive Information
+  M1036: Account Use Policies
+  M1037: Filter Network Traffic

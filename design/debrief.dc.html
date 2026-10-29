@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Breach — Level 3 debrief</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4EEE2}
+a{color:#1C1917}a:hover{color:#57534E}
+</style>
+</helmet>
+<div style="font-family: Geist, system-ui, sans-serif; color: #1C1917; background: #F4EEE2; background-image: radial-gradient(#D9CFBC 1.2px, transparent 1.2px); background-size: 22px 22px; min-height: 100vh; display: flex; flex-direction: column">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: #1C1917; color: #F4EEE2">
+    <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span style="width: 34px; height: 34px; border-radius: 8px; background: {{accent}}; display: flex; align-items: center; justify-content: center; transform: rotate(-6deg)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"></path><path d="M9 12l6 0"></path></svg>
+        </span>
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: -0.03em">Breach</span>
+      </div>
+      <span style="display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #2E2A26; font-size: 13px">
+        <span style="font-family: 'Geist Mono', monospace; font-weight: 700; color: #F5C542">LVL 3</span>
+        <span style="font-weight: 600">Debrief</span>
+      </span>
+    </div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap">
+      <a href="Main.dc.html" style="display: inline-flex; align-items: center; height: 40px; padding: 0 16px; border: 2px solid #57534E; border-radius: 10px; color: #F4EEE2; font: 600 13px Geist, sans-serif; text-decoration: none">Back to design</a>
+      <button type="button" style="height: 40px; padding: 0 20px; border: 2px solid #F4EEE2; border-radius: 10px; background: {{accent}}; font: 700 14px Geist, sans-serif; color: #FFFFFF; cursor: pointer; box-shadow: 3px 3px 0 #F4EEE2">Try again</button>
+    </div>
+  </header>
+
+  <div style="max-width: 1200px; width: 100%; margin: 0 auto; padding: 32px 24px 56px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+
+    <section style="display: flex; flex-wrap: wrap; gap: 28px; align-items: center">
+      <div style="position: relative; flex: 0 0 auto; width: 190px; height: 190px">
+        <span style="position: absolute; inset: 0; border-radius: 95px; background: #F5C542; border: 3px solid #1C1917; box-shadow: 6px 6px 0 #1C1917"></span>
+        <span style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px">
+          <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 12px; letter-spacing: 0.08em">GRADE</span>
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 76px; line-height: 1; letter-spacing: -0.04em">C+</span>
+        </span>
+        <span style="position: absolute; right: -10px; top: 6px; padding: 4px 10px; border-radius: 999px; background: {{accent}}; color: #FFFFFF; border: 2px solid #1C1917; font-weight: 700; font-size: 12px; transform: rotate(8deg)">Breached</span>
+      </div>
+      <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 12px">
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 46px; line-height: 1.02; letter-spacing: -0.03em">The red team got in, in 3 steps.</h1>
+        <p style="margin: 0; font-size: 16px; line-height: 1.55; color: #44403C; max-width: 560px">Your perimeter held up well. One route without auth let them in, and an over-powered role did the rest. Fix those two and you're at a B.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+            <span style="display: flex; align-items: baseline; gap: 8px; padding: 8px 14px; border: 2px solid #1C1917; border-radius: 12px; background: #FFFBF2; box-shadow: 3px 3px 0 #1C1917">
+              <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 18px">{{s.value}}</span>
+              <span style="font-size: 13px; color: #44403C">{{s.label}}</span>
+            </span>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 22px; align-items: start">
+      <div style="background: #FFFFFF; border: 2px solid #1C1917; border-radius: 16px; box-shadow: 5px 5px 0 {{accent}}; overflow: hidden">
+        <div style="padding: 14px 18px; background: {{accent}}; color: #FFFFFF; border-bottom: 2px solid #1C1917; display: flex; justify-content: space-between; align-items: baseline">
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">What got through</h2>
+          <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 12px">3 TECHNIQUES</span>
+        </div>
+        <div style="padding: 6px 18px 18px; display: flex; flex-direction: column">
+          <sc-for list="{{through}}" as="t" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 6px; padding: 14px 0; border-bottom: 2px dashed #E9E1D0">
+              <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap">
+                <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 4px; background: #FADCD5; color: #8A2414">{{t.id}}</span>
+                <span style="font-size: 15px; font-weight: 700">{{t.name}}</span>
+              </div>
+              <span style="font-size: 13px; line-height: 1.5; color: #44403C">{{t.why}}</span>
+              <span style="display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; padding: 8px 10px; border-radius: 8px; background: #CCEDE8">
+                <span style="font-weight: 700; color: #0B5650">Fix</span><span>{{t.fix}}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 22px">
+        <div style="background: #FFFFFF; border: 2px solid #1C1917; border-radius: 16px; box-shadow: 5px 5px 0 #0F766E; overflow: hidden">
+          <div style="padding: 14px 18px; background: #0F766E; color: #FFFFFF; border-bottom: 2px solid #1C1917">
+            <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">What held</h2>
+          </div>
+          <div style="padding: 16px 18px; display: flex; flex-direction: column; gap: 12px">
+            <sc-for list="{{held}}" as="h" hint-placeholder-count="3">
+              <div style="display: flex; gap: 10px; align-items: flex-start">
+                <span style="flex: 0 0 24px; width: 24px; height: 24px; border-radius: 12px; background: #0F766E; border: 2px solid #1C1917; display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>
+                </span>
+                <span style="font-size: 13px; line-height: 1.5; color: #44403C"><span style="font-weight: 700; color: #1C1917">{{h.what}}</span> {{h.why}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background: #FFFBF2; border: 2px solid #1C1917; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span style="width: 32px; height: 32px; border-radius: 8px; background: #F5C542; border: 2px solid #1C1917; display: flex; align-items: center; justify-content: center; box-sizing: border-box">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C1917" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"></path></svg>
+            </span>
+            <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 18px">For an A, also mention</h2>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.5; color: #44403C">
+            <li>Auth on every route, not just the obvious ones</li>
+            <li>Task roles with IMDSv2, so credentials can't be lifted</li>
+            <li>Tokenised card numbers, so the database never holds raw values</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; padding: 22px; border: 2px solid #1C1917; border-radius: 16px; background: #1C1917; color: #F4EEE2">
+      <div style="flex: 0 0 auto; width: 290px; max-width: 100%; border: 2px solid #F4EEE2; border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 12px; background: #2E2A26; box-sizing: border-box; transform: rotate(-2deg); box-shadow: 5px 5px 0 {{accent}}">
+        <div style="display: flex; justify-content: space-between; align-items: center">
+          <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 18px">Breach</span>
+          <span style="font-family: 'Geist Mono', monospace; font-weight: 700; font-size: 11px; color: #F5C542">LVL 3 · C+</span>
+        </div>
+        <span style="font-size: 17px; font-weight: 600; line-height: 1.3">I stopped 6 of 11 attacks on a payments backend. Can you beat it?</span>
+        <div style="display: flex; gap: 4px">
+          <sc-for list="{{bars}}" as="b" hint-placeholder-count="11">
+            <span style="{{b.style}}"></span>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 10px">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px">Show off your score</h2>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #D6CEC0">Shares your grade only, never your architecture.</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+          <button type="button" style="height: 40px; padding: 0 16px; border: 2px solid #F4EEE2; border-radius: 10px; background: #F5C542; color: #1C1917; font: 700 13px Geist, sans-serif; cursor: pointer">Share to LinkedIn</button>
+          <button type="button" style="height: 40px; padding: 0 16px; border: 2px solid #57534E; border-radius: 10px; background: transparent; color: #F4EEE2; font: 600 13px Geist, sans-serif; cursor: pointer">Copy image</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#C8371E","options":["#C8371E","#B91C1C","#7C3AED","#1D4ED8"]},"$preview":{"width":1440,"height":980}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#C8371E';
+    const bars = [];
+    for (let i = 0; i < 11; i++) {
+      bars.push({ style: 'flex: 1; height: 10px; border-radius: 3px; background: ' + (i < 6 ? '#F5C542' : accent) });
+    }
+    return {
+      accent,
+      bars,
+      stats: [
+        { value: '2/5', label: 'attack paths blocked' },
+        { value: '6/11', label: 'techniques stopped' },
+        { value: '4/6', label: 'coins spent' }
+      ],
+      through: [
+        { id: 'T1190', name: 'Exploit public-facing app', why: 'The WAF was a good call, but /refunds accepts requests without a token.', fix: 'Require auth on every route at the gateway.' },
+        { id: 'T1552.005', name: 'Cloud instance metadata', why: 'Code in the container could read its own IAM credentials.', fix: 'Use task roles with IMDSv2 and a hop limit of 1.' },
+        { id: 'T1078.004', name: 'Valid cloud accounts', why: 'The role can read every table, so stolen credentials read card data in plain text.', fix: 'Scope the role to the tables it needs, and tokenise card numbers.' }
+      ],
+      held: [
+        { what: 'Secrets store.', why: 'No public endpoint, so direct access was blocked.' },
+        { what: 'Admin console.', why: 'MFA stopped the credential-stuffing attempt.' },
+        { what: 'Database network.', why: 'Private subnet only, so no direct internet connection.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

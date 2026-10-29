@@ -1,0 +1,14 @@
+component_types:
+  api_gateway:  { techniques: [T1190, T1110, T1498] }
+  container:    { techniques: [T1552.005, T1528] }
+  database:     { techniques: [T1078.004] }
+  object_store: { techniques: [T1530, T1078.004] }
+  secrets:      { techniques: [T1078.004] }
+
+cards:
+  waf:             { cost: 1, mitigations: [M1050, M1037] }
+  private_subnet:  { cost: 1, mitigations: [M1030, M1035] }
+  encryption:      { cost: 1, mitigations: [M1041] }
+  mfa:             { cost: 1, mitigations: [M1032] }
+  least_privilege: { cost: 1, mitigations: [M1026, M1018] }
+  rate_limit:      { cost: 1, mitigations: [M1036] }
