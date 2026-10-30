@@ -1,11 +1,16 @@
-# Breach: fight an AI red team
+# Breach
+### Defend a system design against an AI red team
 
-Breach is LeetCode for security. You're handed a system design (a payments
-backend, say) and told to defend it: spend a small budget on real controls
-like MFA or encryption, and explain your reasoning in plain English. Then
-an AI red team attacks your design with actual MITRE ATT&CK techniques,
-the same ones real attackers use. You get a grade back: what got through,
-what held, and what would have pushed you from a C to an A.
+An LLM-powered threat-modelling game. You're handed a system design (a
+payments backend, say), defend it with real security controls, and an AI
+red team attacks it using actual MITRE ATT&CK techniques, explaining
+every move.
+
+Breach is LeetCode for security: spend a small budget on controls like
+MFA or encryption, and explain your reasoning in plain English. The
+attack then runs for real, not a canned animation, and you get a grade
+back: what got through, what held, and what would have pushed you from a
+C to an A.
 
 The one rule that keeps this trustworthy: the AI never decides whether you
 win or lose. A deterministic attack engine does that, every time, the same
