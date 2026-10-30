@@ -53,6 +53,18 @@ Every design choice below serves that: the attack outcome is never decided
 by the model, every LLM output is schema-validated, and judge quality is
 measured with a real eval suite rather than assumed.
 
+### Screenshots
+
+| Level select | Game screen | Debrief |
+|---|---|---|
+| ![Level select](docs/screenshots/level-select.png) | ![Game screen mid-attack](docs/screenshots/game-screen.png) | ![Debrief](docs/screenshots/debrief.png) |
+
+The game screen above is a real run against the local LLM provider
+(`LLM_PROVIDER=ollama`) — note the flagged component in the debrief: the
+defender's own notes on Postgres tried a prompt-injection attempt, and the
+judge's `injection_suspected` flag caught it, which the narrator then
+calls out instead of crediting it (see [Security](#security)).
+
 ## Architecture
 
 ```
