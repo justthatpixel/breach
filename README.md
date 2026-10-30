@@ -71,28 +71,43 @@ crediting it (see [Security](#security)):
 
 ## Architecture
 
-```
- player notes ──▶ judge (LLM) ──▶ credited mitigations
-                     │                     │
-                     ▼                     ▼
- level + cards ──────────────▶ engine (deterministic) ──▶ attack paths, grade
-                                          │
-                                          ▼
-                                 narrator (LLM) ──▶ replay + debrief text
+The LLM never decides whether an attack succeeds — it only grades notes
+(the judge) and writes the narration (the narrator). The engine in the
+middle is plain, deterministic code.
+
+```mermaid
+flowchart LR
+    notes["Player's notes"] --> judge["Judge (LLM)<br/>grades the notes"]
+    judge --> credits["Which mitigations<br/>actually count"]
+
+    level["Level + cards played"] --> engine
+    credits --> engine["Attack engine<br/>(deterministic code, no LLM)"]
+    engine --> result["Attack paths + grade"]
+
+    result --> narrator["Narrator (LLM)<br/>writes it up"]
+    narrator --> replay["Replay + debrief text"]
 ```
 
-- The engine is the only thing that decides whether an attack breaches —
-  pure, I/O-free, 100% unit-tested (`breach/engine/`).
-- The judge and narrator sit on either side of it, never inside it: the
-  judge's output is three verified fields (`credited`, `rejected_claims`,
-  `injection_suspected`), the narrator only ever sees the engine's own
-  output, never the player's raw notes.
-- Retrieval (`breach/retrieval/`) is hybrid: a structured SQL filter first
-  (which mitigations are even relevant to this component's techniques),
-  then pgvector ranks that filtered set against the notes.
-- Visual spec: `design/game-screen.dc.html` and `design/debrief.dc.html` —
-  design-tool exports used as a styling/content reference, not shipped as
-  code.
+1. The player writes a note on a component; the **judge** reads it and
+   decides which mitigations it genuinely backs up.
+2. The **engine** takes the level, the cards played, and the judge's
+   verdict, and works out — with plain code, no LLM involved — exactly
+   which attack paths get through. This is the one source of truth for
+   whether the player wins or loses, and it's 100% unit-tested
+   (`breach/engine/`).
+3. The **narrator** takes the engine's result and writes the Red Team
+   replay and debrief text. It never sees the player's original notes,
+   only the engine's output, so there's nothing in the notes for it to
+   be tricked by.
+
+Finding which mitigations are even relevant to a note is a two-step
+search (`breach/retrieval/`): first a plain database filter narrows it
+down to the mitigations that make sense for that component, then a
+similarity search ranks those by how well they match what the player
+wrote.
+
+The visual design comes from `design/game-screen.dc.html` and
+`design/debrief.dc.html` — reference mockups, not shipped code.
 
 ## Repository structure
 
@@ -157,21 +172,31 @@ and the e2e suite with `npm run test:e2e` from `apps/web`.
 
 ## Key components
 
-Both the embedding provider and the LLM provider sit behind an interface
-(`EMBEDDING_PROVIDER`, `LLM_PROVIDER` in `.env`) so swapping is a one-file,
-one-env-var change — never scattered through call sites.
+Both the search that finds relevant mitigations and the LLM that grades
+notes can be swapped out with a single setting in `.env` — nothing else in
+the code needs to change.
 
-| Provider | Flag | Needs | Used for |
-|---|---|---|---|
-| MiniMax `embo-01` | `EMBEDDING_PROVIDER=minimax` (default) | `MINIMAX_API_KEY` | real embeddings |
-| Deterministic bag-of-words | `EMBEDDING_PROVIDER=test` | nothing | tests, e2e, no-key local dev |
-| Anthropic Claude | `LLM_PROVIDER=anthropic` (default) | `ANTHROPIC_API_KEY` | real judge/narrator |
-| Ollama (Qwen3 8B) | `LLM_PROVIDER=ollama` | a local Ollama server | real judge/narrator, free, used for eval numbers + the CI gate |
-| Deterministic test LLM | `LLM_PROVIDER=test` | nothing | tests, e2e, no-key local dev |
+**Finding relevant mitigations** (`EMBEDDING_PROVIDER`):
 
-`POST /runs` (HANDOFF §10) is the whole loop — judge → engine → narrator —
-logging latency and token usage per LLM call plus a cost estimate (always
-$0 for Ollama/test, list-price for Anthropic).
+- `minimax` (the default) — MiniMax's real embedding model. Needs a
+  `MINIMAX_API_KEY`.
+- `test` — a simple built-in fallback that needs no key and no network.
+  Used automatically by the automated tests and by anyone running the
+  project locally without a MiniMax key.
+
+**Grading notes and writing narration** (`LLM_PROVIDER`):
+
+- `anthropic` (the default) — Claude. Needs an `ANTHROPIC_API_KEY`.
+- `ollama` — a model running on your own machine via
+  [Ollama](https://ollama.com) (this project uses Qwen3 8B). Completely
+  free, no key needed. This is what produced the eval numbers below and
+  what the CI quality gate runs on.
+- `test` — a simple built-in fallback, no key or server needed. Used by
+  the automated tests.
+
+Every run through `POST /runs` also logs how long each LLM call took, how
+many tokens it used, and an estimated cost (always $0 on `ollama` or
+`test`, list price on `anthropic`).
 
 ## Security
 
