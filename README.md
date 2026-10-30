@@ -272,6 +272,11 @@ on each run.
   numbers if judge F1 drops more than 3 points below the committed
   baseline, or if any injection case produces an unjustified credit.
 
+A real run of `ci.yml`: all three jobs (backend, frontend, end-to-end)
+passed, with `backend` and `frontend` running in parallel before `e2e`.
+
+![A passing CI run](docs/screenshots/ci-run.jpg)
+
 ## Learnings
 
 - **The original design didn't hold against real data.** An early example
