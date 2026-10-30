@@ -55,15 +55,19 @@ measured with a real eval suite rather than assumed.
 
 ### Screenshots
 
-| Level select | Game screen | Debrief |
-|---|---|---|
-| ![Level select](docs/screenshots/level-select.png) | ![Game screen mid-attack](docs/screenshots/game-screen.png) | ![Debrief](docs/screenshots/debrief.png) |
+**Level select**
+![Level select](docs/screenshots/level-select.png)
 
-The game screen above is a real run against the local LLM provider
-(`LLM_PROVIDER=ollama`) — note the flagged component in the debrief: the
-defender's own notes on Postgres tried a prompt-injection attempt, and the
-judge's `injection_suspected` flag caught it, which the narrator then
-calls out instead of crediting it (see [Security](#security)).
+**Game screen**, mid-attack — secure components, play cards, run the attack,
+watch the replay:
+![Game screen mid-attack](docs/screenshots/game-screen.png)
+
+**Debrief** — this run is real, against the local LLM provider
+(`LLM_PROVIDER=ollama`), not a mock. Note the flagged technique in the
+replay log: the defender's own notes on Postgres tried a prompt-injection
+attempt, and the judge's `injection_suspected` flag caught it rather than
+crediting it (see [Security](#security)):
+![Debrief](docs/screenshots/debrief.png)
 
 ## Architecture
 
