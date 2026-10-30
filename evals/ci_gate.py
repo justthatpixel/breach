@@ -31,9 +31,20 @@ def post_pr_comment(body: str) -> None:
     repo = os.environ.get("GITHUB_REPOSITORY")
     pr_number = os.environ.get("PR_NUMBER")
     if not repo or not pr_number:
-        print("(not running against a PR — skipping PR comment)")
+        print("(not running against a PR, skipping PR comment)")
         return
-    subprocess.run(["gh", "pr", "comment", pr_number, "--repo", repo, "--body", body], check=True)
+    try:
+        subprocess.run(
+            ["gh", "pr", "comment", pr_number, "--repo", repo, "--body", body],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        # Posting the comment is a courtesy, not the gate's job. A failure
+        # here (e.g. gh not authenticated on this runner) shouldn't mask
+        # the actual pass/fail result computed above.
+        print(f"(failed to post PR comment: {exc.stderr.strip() if exc.stderr else exc})")
 
 
 def main() -> int:

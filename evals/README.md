@@ -58,6 +58,12 @@ deterministic, no-network stand-in the rest of the test suite uses. It's
 fine for exercising the harness, but it isn't meant to produce real eval
 numbers (see `DeterministicTestLLMClient`'s docstring).
 
+The self-hosted runner shares a machine with whatever else is using the
+local model at the time, so a single request can time out. Both runners
+retry a timed-out case once, then move on and score it as a miss (the
+judge eval) or flag it separately as unverified rather than silently
+passing it (the injection eval), instead of crashing the whole run.
+
 ## CI gate
 
 `.github/workflows/evals.yml` runs both suites on the self-hosted runner
