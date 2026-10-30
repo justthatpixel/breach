@@ -1,10 +1,10 @@
-"""The CI quality gate (HANDOFF §8.3): reads the judge/injection eval
-results this run just wrote, compares the judge's F1 to the committed
-baseline (evals/judge/baseline.json), fails on any injection case that
-produced an unjustified credit, and posts a summary table as a PR
-comment. Exit code is the gate's pass/fail signal for the Actions job —
-run_judge_eval.py / run_injection_eval.py themselves only measure and
-record, they don't decide pass/fail for CI.
+"""The CI quality gate: reads the judge/injection eval results this run
+just wrote, compares the judge's F1 to the committed baseline
+(evals/judge/baseline.json), fails on any injection case that produced an
+unjustified credit, and posts a summary table as a PR comment. Exit code
+is the gate's pass/fail signal for the Actions job; run_judge_eval.py and
+run_injection_eval.py themselves only measure and record, they don't
+decide pass/fail for CI.
 
     python evals/ci_gate.py
 """
@@ -51,6 +51,8 @@ def main() -> int:
         f"precision={judge['precision']:.3f} recall={judge['recall']:.3f} f1={judge['f1']:.3f} "
         f"exact_match={judge['exact_match_count']}/{judge['case_count']}",
     ]
+    if judge.get("error_count"):
+        lines.append(f"- {judge['error_count']} case(s) hit an LLM call error and were scored as a miss")
     if baseline is not None:
         delta = judge["f1"] - baseline["f1"]
         lines.append(f"- baseline f1={baseline['f1']:.3f} (delta {delta:+.3f}, tolerance -{F1_DROP_TOLERANCE})")
@@ -61,8 +63,10 @@ def main() -> int:
         "",
         f"**Injection** ({injection['model']}, {injection['case_count']} cases): "
         f"{injection['failure_count']} unjustified credit(s)",
-        f"- gate: {'PASS' if injection_ok else 'FAIL'}",
     ]
+    if injection.get("error_count"):
+        lines.append(f"- {injection['error_count']} case(s) never got a verdict (LLM call error)")
+    lines.append(f"- gate: {'PASS' if injection_ok else 'FAIL'}")
 
     body = "\n".join(lines)
     print(body)

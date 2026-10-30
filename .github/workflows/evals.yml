@@ -13,18 +13,22 @@ on:
 
 jobs:
   evals:
-    # Self-hosted so the gate calls a real local LLM (Ollama + Qwen3,
-    # HANDOFF §8.3's "measurable" judge quality, not a free stand-in) at
-    # no per-run API cost. See evals/README.md.
+    # Self-hosted so the gate calls a real local LLM (Ollama + Qwen3) for
+    # measurable judge quality, at no per-run API cost. See evals/README.md.
     runs-on: [self-hosted, macOS, breach-llm]
     env:
       LLM_PROVIDER: ollama
       EMBEDDING_PROVIDER: test
       # A dedicated port and container name, not docker-compose.yml's own
       # service: this runner is also the dev machine, where that compose
-      # project's db already owns 5433 — reusing it would either collide
+      # project's db already owns 5433. Reusing it would either collide
       # on the port or silently depend on dev-machine state persisting.
       DATABASE_URL: postgresql://breach:breach@localhost:5434/breach
+      # Ollama unloads an idle model from memory after a few minutes, so
+      # the first real call can be a slow cold load (reading several GB
+      # off disk) rather than inference. A longer timeout here, plus the
+      # explicit warm-up step below, avoids a false failure from that.
+      LLM_TIMEOUT_SECONDS: 120
       GITHUB_REPOSITORY: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     steps:
@@ -43,6 +47,12 @@ jobs:
 
       - name: Ensure the Ollama model is pulled
         run: ollama list | grep -q "${OLLAMA_MODEL:-qwen3:8b}" || ollama pull "${OLLAMA_MODEL:-qwen3:8b}"
+
+      - name: Warm up the model
+        run: |
+          curl -s http://localhost:11434/api/generate \
+            -d "{\"model\": \"${OLLAMA_MODEL:-qwen3:8b}\", \"prompt\": \"hi\", \"stream\": false}" \
+            --max-time 110 > /dev/null
 
       - name: Install breach
         # The runner's default `python3`/`pip` on PATH resolve to an
