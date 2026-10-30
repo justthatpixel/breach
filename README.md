@@ -1,14 +1,17 @@
-# Breach
+# Breach: fight an AI red team
 
-A threat-modelling game: you're handed a system architecture, you secure it
-with a budget of control cards, and an AI red team attacks it using real
-MITRE ATT&CK techniques. You get a graded debrief showing what got through,
-what held, and what to fix for a better grade.
+Breach is LeetCode for security. You're handed a system design (a payments
+backend, say) and told to defend it: spend a small budget on real controls
+like MFA or encryption, and explain your reasoning in plain English. Then
+an AI red team attacks your design with actual MITRE ATT&CK techniques,
+the same ones real attackers use. You get a grade back: what got through,
+what held, and what would have pushed you from a C to an A.
 
-The attack outcome is always decided by plain, deterministic code. The LLM
-only does two things: it grades your notes (the judge) and writes up the
-result (the narrator). Both are schema-validated, so the model can never
-produce something the rest of the system doesn't expect.
+The one rule that keeps this trustworthy: the AI never decides whether you
+win or lose. A deterministic attack engine does that, every time, the same
+way for the same inputs. The AI's only two jobs are reading your notes to
+see what you actually defended, and narrating what happened afterward, and
+both of those are locked down tightly enough that it can't go off script.
 
 ![Next.js](https://img.shields.io/badge/Next.js-App_Router-black)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.13-009688)
@@ -34,13 +37,9 @@ produce something the rest of the system doesn't expect.
 
 ## Overview
 
-Think of it like LeetCode, but for security instead of algorithms. On
-LeetCode you're handed a problem and asked to write the code that solves
-it. Here you're handed a system (a payments backend, say) and asked to
-defend it: you don't design the architecture, it's already drawn for you,
-your job is to secure it well enough that it survives an attack.
-
-Each level works the same way:
+You don't design the architecture; it's already drawn for you. Your job is
+to secure it well enough that it survives an attack. Each level works the
+same way:
 
 1. **You get the brief.** A fixed architecture and a scenario, for
    example "this payments backend goes live Friday, you have 6 coins to
