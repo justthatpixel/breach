@@ -25,6 +25,7 @@
 
 .row {
   display: flex;
+  gap: 12px;
   padding: 14px 8px 4px;
   overflow-x: auto;
 }
@@ -32,7 +33,6 @@
 .card {
   flex: 0 0 120px;
   height: 168px;
-  margin-left: -10px;
   display: flex;
   flex-direction: column;
   border: 2px solid var(--ink);
