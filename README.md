@@ -1,22 +1,16 @@
 # Breach
 ### Defend a system design against an AI red team
 
-An LLM-powered threat-modelling game. You're handed a system design (a
-payments backend, say), defend it with real security controls, and an AI
-red team attacks it using actual MITRE ATT&CK techniques, explaining
-every move.
+An LLM-powered threat-modelling game, LeetCode for security. You're
+handed a system design (a payments backend, say) and a small budget of
+controls like MFA or encryption. Explain your reasoning in plain English,
+then a real AI red team attacks it with actual MITRE ATT&CK techniques,
+not a canned animation. You get a grade back: what got through, what
+held, and what would push you from a C to an A.
 
-Breach is LeetCode for security: spend a small budget on controls like
-MFA or encryption, and explain your reasoning in plain English. The
-attack then runs for real, not a canned animation, and you get a grade
-back: what got through, what held, and what would have pushed you from a
-C to an A.
-
-The one rule that keeps this trustworthy: the AI never decides whether you
-win or lose. A deterministic attack engine does that, every time, the same
-way for the same inputs. The AI's only two jobs are reading your notes to
-see what you actually defended, and narrating what happened afterward, and
-both of those are locked down tightly enough that it can't go off script.
+The AI never decides whether you win: a deterministic engine does that.
+It only grades your notes and narrates what happened, both locked down
+tightly enough that it can't go off script.
 
 ![Next.js](https://img.shields.io/badge/Next.js-App_Router-black)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.13-009688)
