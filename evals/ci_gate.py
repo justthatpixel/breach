@@ -1,10 +1,10 @@
-"""The CI quality gate (HANDOFF §8.3): reads the judge/injection eval
-results this run just wrote, compares the judge's F1 to the committed
-baseline (evals/judge/baseline.json), fails on any injection case that
-produced an unjustified credit, and posts a summary table as a PR
-comment. Exit code is the gate's pass/fail signal for the Actions job —
-run_judge_eval.py / run_injection_eval.py themselves only measure and
-record, they don't decide pass/fail for CI.
+"""The CI quality gate: reads the judge/injection eval results this run
+just wrote, compares the judge's F1 to the committed baseline
+(evals/judge/baseline.json), fails on any injection case that produced an
+unjustified credit, and posts a summary table as a PR comment. Exit code
+is the gate's pass/fail signal for the Actions job; run_judge_eval.py and
+run_injection_eval.py themselves only measure and record, they don't
+decide pass/fail for CI.
 
     python evals/ci_gate.py
 """
