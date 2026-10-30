@@ -34,19 +34,28 @@ produce something the rest of the system doesn't expect.
 
 ## Overview
 
-One level ships at a time, and the player doesn't design the architecture;
-they secure a given one. The core loop:
+Think of it like LeetCode, but for security instead of algorithms. On
+LeetCode you're handed a problem and asked to write the code that solves
+it. Here you're handed a system (a payments backend, say) and asked to
+defend it: you don't design the architecture, it's already drawn for you,
+your job is to secure it well enough that it survives an attack.
 
-1. The level opens with a fixed architecture and a brief, for example "this
-   payments backend goes live Friday, you have 6 coins."
-2. The player selects a component, plays control cards on it, and writes a
-   free-text note explaining how they secured it.
-3. **Run attack.** The judge reads the notes and decides which mitigations
-   they genuinely back up, the engine works out every attack path against
-   the resulting defences, and the narrator turns that into a step-by-step
-   Red Team replay.
-4. The debrief shows the grade, what got through (with technique IDs and
-   fixes), and what held.
+Each level works the same way:
+
+1. **You get the brief.** A fixed architecture and a scenario, for
+   example "this payments backend goes live Friday, you have 6 coins to
+   spend on defences."
+2. **You defend it.** Click a component, spend coins on control cards
+   (MFA, encryption, a WAF, and so on), and write a short note explaining
+   why you made that call, the same way you'd explain your approach in an
+   interview.
+3. **You submit.** Hit "Run attack" and an AI red team goes after your
+   design for real, using actual MITRE ATT&CK techniques. It's not a
+   canned animation: your notes get graded, and the attack plays out
+   against your actual defences.
+4. **You get your result.** A grade, exactly like a test runner showing
+   you which cases passed, what got through and why, and what to fix for
+   a better score next time.
 
 The point of the project is showing that LLM behaviour can be made
 grounded, measurable, and secure, not just "an app that calls an LLM."
