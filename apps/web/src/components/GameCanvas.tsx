@@ -6,6 +6,7 @@ import ReactFlow, {
   type Edge,
   type Node,
   ReactFlowProvider,
+  useViewport,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import styles from "./GameCanvas.module.css";
@@ -82,25 +83,6 @@ export function GameCanvas({
     [level.edges, touchedEdges]
   );
 
-  const stepBadges = revealedSteps.map((step) => {
-    const from = level.components.find((c) => c.id === step.from);
-    const to = level.components.find((c) => c.id === step.to);
-    if (!from || !to) return null;
-    const x =
-      (from.position.x + to.position.x) / 2 + NODE_SIZE.width / 2;
-    const y = (from.position.y + to.position.y) / 2 + NODE_SIZE.height / 2;
-    const isLast = step === revealedSteps[revealedSteps.length - 1];
-    return (
-      <span
-        key={step.step}
-        className={`${styles.stepBadge} ${isLast && attackRunning ? styles.stepBadgeCurrent : ""}`}
-        style={{ left: x, top: y }}
-      >
-        {step.step}
-      </span>
-    );
-  });
-
   return (
     <div className={styles.wrapper}>
       <span className={styles.banner}>
@@ -148,8 +130,52 @@ export function GameCanvas({
         >
           <Background color="var(--paper-dot, #D9CFBC)" gap={22} size={1.2} />
         </ReactFlow>
+        <StepBadges level={level} revealedSteps={revealedSteps} attackRunning={attackRunning} />
       </ReactFlowProvider>
-      {stepBadges}
+    </div>
+  );
+}
+
+interface StepBadgesProps {
+  level: Level;
+  revealedSteps: AttackReplayStep[];
+  attackRunning: boolean;
+}
+
+/**
+ * The attack step number markers live in the same coordinate space as
+ * node.position (flow space), so they need React Flow's own pan/zoom
+ * transform applied — otherwise they stay pinned to their initial screen
+ * position while the canvas underneath zooms and pans past them.
+ * useViewport() reads that transform; this renders as a sibling of
+ * <ReactFlow> rather than a child so plain DOM positioning (not SVG)
+ * works for the badges.
+ */
+function StepBadges({ level, revealedSteps, attackRunning }: StepBadgesProps) {
+  const viewport = useViewport();
+
+  return (
+    <div
+      className={styles.stepBadgeLayer}
+      style={{ transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})` }}
+    >
+      {revealedSteps.map((step) => {
+        const from = level.components.find((c) => c.id === step.from);
+        const to = level.components.find((c) => c.id === step.to);
+        if (!from || !to) return null;
+        const x = (from.position.x + to.position.x) / 2 + NODE_SIZE.width / 2;
+        const y = (from.position.y + to.position.y) / 2 + NODE_SIZE.height / 2;
+        const isLast = step === revealedSteps[revealedSteps.length - 1];
+        return (
+          <span
+            key={step.step}
+            className={`${styles.stepBadge} ${isLast && attackRunning ? styles.stepBadgeCurrent : ""}`}
+            style={{ left: x, top: y }}
+          >
+            {step.step}
+          </span>
+        );
+      })}
     </div>
   );
 }
